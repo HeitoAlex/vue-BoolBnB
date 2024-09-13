@@ -1,11 +1,12 @@
 <script>
-
+    import HeaderMain from '../components/HeaderMain.vue';
     import ProjectList from '../components/ProjectList.vue';
 
     export default {
 
         components:{
-            ProjectList
+            ProjectList,
+            HeaderMain
         },
 
         data(){
@@ -17,6 +18,7 @@
 </script>
 
 <template>
+    <HeaderMain /> <!-- Testing -->
     <ProjectList/>
 </template>
 

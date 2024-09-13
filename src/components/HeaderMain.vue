@@ -36,11 +36,16 @@
 
 <!-- # Contenuto HTML --------------------------------------------------------- -->
 <template>
+
     <header :class="{'header-main': true, 'scrolled': isScrolled}">
       <div class="container">
+
+        <!-- Logo a Sinistra dell'header -->
         <div class="logo">
           <img src="../assets/img/Logo_BoolBnB_.png" alt="Logo">
         </div>
+
+
         <nav class="navigation">
           <ul>
             <li>
@@ -62,6 +67,9 @@
             </li>
           </ul>
         </nav>
+
+
+
         <div class="actions">
           <button class="btn-secondary">Accedi</button>
           <button class="btn-primary">Registrati</button>
@@ -71,8 +79,13 @@
             <span></span>
           </div>
         </div>
-      </div>
-      <!-- Sidebar per dispositivi mobili -->
+
+
+      </div> <!-- div chiusura container -->
+
+
+
+      <!-- Sidebar per dispositivi mobili WORK IN PROGRESS -->
       <transition name="slide">
         <aside v-if="isSidebarOpen" class="sidebar">
           <div class="sidebar-header">

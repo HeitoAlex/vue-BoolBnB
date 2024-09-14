@@ -1,11 +1,11 @@
 <script>
 
-    import ProjectList from '../components/ProjectList.vue';
+    import ApartmentList from '../components/ApartmentList.vue';
 
     export default {
 
         components:{
-            ProjectList
+            ApartmentList
         },
 
         data(){
@@ -17,7 +17,7 @@
 </script>
 
 <template>
-    <ProjectList/>
+    <ApartmentList/>
 </template>
 
 <style scoped>

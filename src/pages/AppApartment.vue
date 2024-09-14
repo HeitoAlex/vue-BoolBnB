@@ -1,21 +1,21 @@
 <script>
-    import SingleProject from '../components/SingleProject.vue';
+    import SingleApartment from '../components/SingleApartment.vue';
     import axios from 'axios';
     
     export default {
         components:{
-            SingleProject
+            SingleApartment
         },
 
         data(){
             return{
-                project: null,
+                apartment: null,
             }
         },
 
         methods:{
-            getProject(id){
-                axios.get(`http://127.0.0.1:8000/api/projects/${id}`, {
+            getApartment(id){
+                axios.get(`http://127.0.0.1:8000/api/apartments/${id}`, {
                     params: {
                     
                     }
@@ -32,15 +32,15 @@
         },
 
         created(){
-            this.getProject( this.$route.params.id );
+            this.getApartment( this.$route.params.id );
         }
     }
 </script>
 
 <template>
     <div class="container">
-        <div class="project-list">
-            <SingleProject v-if=" project != null " :author="project.author" :image="project.image" :title="project.title" :content="project.content" :link="project.link"/>
+        <div class="apartment-list">
+            <SingleApartment v-if=" apartment != null " :title="apartment.title" :rooms_num="apartment.rooms_num" :beds_num="apartment.beds_num" :bathroom_num="apartment.bathroom_num" :sq_mt="apartment.sq_mt" :address="apartment.address" :images="apartment.images" :visibility="apartment.visibility"/>
         </div>
     </div>
 </template>

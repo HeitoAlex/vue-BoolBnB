@@ -23,19 +23,19 @@ export default {
             if (this.searchQuery.length > 2) {
                 fetch(`http://localhost:8000/api/search?location=${encodeURIComponent(this.searchQuery)}`)
                 .then(response => {
-                        console.log('Raw Response:', response);  // Logga la risposta grezza
+                        console.log('Raw Response:', response);  
 
                         if (!response.ok) {
                             throw new Error('Errore nella risposta: ' + response.status);
                         }
 
-                        return response.text();  // Temporaneamente usiamo .text() per vedere esattamente cosa arriva
+                        return response.text();  
                     })
                     .then(data => {
-                        console.log('Risposta come testo:', data);  // Log della risposta prima di parsarla
+                        console.log('Risposta come testo:', data);  
 
                         try {
-                            const parsedData = JSON.parse(data);  // Prova a parsare manualmente
+                            const parsedData = JSON.parse(data);  
                             if (parsedData.success) {
                                 this.results = parsedData.results || [];
                             } else {

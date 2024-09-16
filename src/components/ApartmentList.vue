@@ -161,37 +161,67 @@ export default {
 <style>
 .container {
   width: 1000px;
+  margin: 0 auto; /* Centra il contenuto */
 }
 
 .project-list {
-  margin-top: 3rem;
   display: flex;
   flex-wrap: wrap;
+  gap: 20px; /* Spazio tra le card */
+  margin-top: 3rem; /* Aggiunge margine sopra le card */
+}
+
+a {
+  margin-bottom: 2rem;
+  margin-top: 2rem
 }
 
 .search-bar {
-  margin-top: 10rem;
+  margin-top: 5rem;
   display: flex;
   gap: 10px; /* Spazio tra gli input */
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  background-color: #002b4d;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombra leggera per dare profondità */
 }
 
 .search-bar input {
-  padding: 0.5rem;
+  padding: 0.75rem;
   font-size: 1rem;
-  width: 250px; /* Dimensione del campo di input */
+  width: 300px; /* Campo di input più largo */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); /* Leggera ombreggiatura interna */
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: #007bff; /* Colore di focus */
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3); /* Effetto di focus */
+}
+
+.search-bar input[type="number"] {
+  width: 120px; /* Campo di input per il raggio in km più piccolo */
 }
 
 button {
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   font-size: 1rem;
   background-color: #007bff;
   color: white;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
   background-color: #0056b3;
+  transform: translateY(-2px); /* Leggero sollevamento al passaggio del mouse */
 }
 
 .suggestions-list {
@@ -200,17 +230,38 @@ button:hover {
   margin-top: 0.5rem;
   background-color: white;
   border: 1px solid #ccc;
-  max-width: 250px;
+  max-width: 300px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Aggiunge un'ombra leggera */
   position: absolute;
   z-index: 1000;
 }
 
 .suggestions-list li {
-  padding: 0.5rem;
+  padding: 0.75rem;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .suggestions-list li:hover {
   background-color: #f0f0f0;
 }
+
+/* Stile dei campi input in focus */
+input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
+}
+
+input[type="text"],
+input[type="number"] {
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  width: 250px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
 </style>

@@ -10,7 +10,7 @@
 </script>
 
 <template>
-    <div class="form-container">
+    <div class="form-container content-wrapper-form">
         <div class="mb-3">
             <label for="name" class="form-label">Nome cliente</label>
             <input type="name" class="form-control" id="name" placeholder="Inserire il proprio nome">
@@ -30,6 +30,7 @@
     .form-container{
         max-width: 1000px;
         margin: auto;
+        margin-top: 7em;
         
     }
 

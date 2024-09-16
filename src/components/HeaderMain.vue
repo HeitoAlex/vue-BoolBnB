@@ -68,7 +68,7 @@ export default {
       <!-- Azioni -->
       <div class="actions">
         <!-- Bottone Login o Registrati con link a http://localhost:8000/ -->
-        <a href="http://localhost:8000/" class="btn-primary">Login o Registrati</a>
+        <a href="http://localhost:8000/" class="btn-primary">Accedi</a>
 
         <!-- Bottone per togglare la sidebar -->
         <div class="menu-toggle" @click="toggleSidebar">

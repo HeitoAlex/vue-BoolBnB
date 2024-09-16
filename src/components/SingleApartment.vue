@@ -1,54 +1,40 @@
 <script>
-
-    export default {
-        data(){
-            return{
-                
-            }
+export default {
+    props: {
+        title: {
+            type: String,
+            required: true
         },
-
-        props:{
-            title:{
-                typeof: String,
-                required: true
-            },
-            
-            rooms_num:{
-                typeof: Number,
-                required: true
-            },
-
-            beds_num:{
-                typeof: Number,
-                required: true
-            },
-
-            bathroom_num:{
-                typeof: Number,
-                required: true
-            },
-            
-            sq_mt:{
-                typeof: Number,
-                required: true
-            },
-
-            address:{
-                typeof: String,
-                required: true
-            },
-
-            images:{
-                typeof: String,
-                required: true
-            },
-
-            visibility:{
-                typeof: String,
-                required: true
-            }
+        rooms_num: {
+            type: Number,
+            required: true
+        },
+        beds_num: {
+            type: Number,
+            required: true
+        },
+        bathroom_num: {
+            type: Number,
+            required: true
+        },
+        sq_mt: {
+            type: Number,
+            required: true
+        },
+        address: {
+            type: String,
+            required: true
+        },
+        images: {
+            type: String,
+            required: true
+        },
+        visibility: {
+            type: String,
+            required: true
         }
     }
+}
 </script>
 
 <template>
@@ -57,14 +43,19 @@
         <img :src="images" class="card-img-top" alt="immagine appartamento">
         <div class="card-body">
             <h3 class="card-title">{{ title }}</h3>
-            <p class="card-text">{{ content }}</p>
+            <p class="card-text">Stanze: {{ rooms_num }}</p>
+            <p class="card-text">Letti: {{ beds_num }}</p>
+            <p class="card-text">Bagni: {{ bathroom_num }}</p>
+            <p class="card-text">Metri quadri: {{ sq_mt }} m²</p>
+            <p class="card-text">Indirizzo: {{ address }}</p>
+            <p class="card-text">Visibilità: {{ visibility }}</p>
         </div>
         <div class="card-body">
-            <a href="#" class="card-link">{{ link }}</a>
+            <a href="#" class="card-link">Dettagli</a>
         </div>
     </div>
 </template>
 
-<style >
+<style scoped>
 
 </style>

@@ -22,32 +22,26 @@ export default {
         performSearch() {
             if (this.searchQuery.length > 2) {
                 fetch(`http://localhost:8000/api/search?location=${encodeURIComponent(this.searchQuery)}`)
-                .then(response => {
-                        console.log('Raw Response:', response);  
-
+                    .then(response => {
                         if (!response.ok) {
                             throw new Error('Errore nella risposta: ' + response.status);
                         }
-
-                        return response.text();  
+                        return response.json();  
                     })
                     .then(data => {
-                        console.log('Risposta come testo:', data);  
-
-                        try {
-                            const parsedData = JSON.parse(data);  
-                            if (parsedData.success) {
-                                this.results = parsedData.results || [];
-                            } else {
-                                console.error('Errore nel backend:', parsedData.message);
-                            }
-                        } catch (error) {
-                            console.error('Errore nel parsing del JSON:', error);
+                        if (data.success) {
+                            this.results = data.results || []; 
+                        } else {
+                            console.error('Errore nel backend:', data.message);
+                            this.results = [];
                         }
                     })
                     .catch(error => {
                         console.error('Errore nella ricerca:', error);
+                        this.results = [];
                     });
+            } else {
+                this.results = [];
             }
         }
     }

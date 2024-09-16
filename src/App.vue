@@ -10,6 +10,7 @@ import MainHeader from './components/MainHeader.vue';
   <MainHeader />
   <SearchBar></SearchBar>
   <router-view></router-view>
+  <FooterMain />
 </template>
 
 <style lang="scss">

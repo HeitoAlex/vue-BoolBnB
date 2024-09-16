@@ -15,13 +15,18 @@ const router = createRouter({
             component: AppHome
         },
         {
+            path: '/Chi-siamo',
+            name: 'chi siamo',
+            component: AppHome
+        },
+        {
             path: '/apartment/:id',
             name: 'apartment',
             component: AppApartment
         },
         {
-            path: '/contacts',
-            name: 'contacts',
+            path: '/contatti',
+            name: 'contatti',
             component: AppContacts
         }
     ]

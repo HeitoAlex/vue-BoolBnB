@@ -1,11 +1,15 @@
 <script>
 
     import ApartmentList from '../components/ApartmentList.vue';
+    import HeaderMain from '../components/HeaderMain.vue';
+    import FooterMain from '../components/FooterMain.vue';
 
     export default {
 
         components:{
-            ApartmentList
+            ApartmentList,
+            HeaderMain,
+            FooterMain
         },
 
         data(){
@@ -17,7 +21,9 @@
 </script>
 
 <template>
+    <HeaderMain />
     <ApartmentList/>
+    <FooterMain />
 </template>
 
 <style scoped>

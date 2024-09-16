@@ -4,6 +4,20 @@
           name: 'HeaderMain',
           data() {
             return {
+              navLinks: [
+                    {
+                        label: "Home",
+                        name: "home"
+                    },
+                    {
+                        label: "Chi siamo",
+                        name: "chi siamo"
+                    },
+                    {
+                        label: "Contatti",
+                        name: "contatti"
+                    },
+                ],
               isScrolled: false,
               activeDropdown: null,
               isSidebarOpen: false,
@@ -48,8 +62,10 @@
 
         <nav class="navigation">
           <ul>
-            <li>
-              <a href="#">Home</a>
+            <li class="me-3" v-for=" navlink in navLinks">
+                <router-link :to="{ name: navlink.name }">
+                    {{ navlink.label }}
+                </router-link>
             </li>
             <li class="dropdown" @mouseenter="openDropdown('services')" @mouseleave="closeDropdown">
               <a href="#">Servizi</a>
@@ -58,12 +74,6 @@
                 <li><a href="#">Crea Appartamento</a></li>
                 <li><a href="#">Acquista Sponsor</a></li>
               </ul>
-            </li>
-            <li>
-              <a href="#">Chi Siamo</a>
-            </li>
-            <li>
-              <a href="#">Contatti</a>
             </li>
           </ul>
         </nav>
@@ -93,10 +103,11 @@
             <button @click="toggleSidebar" class="close-btn">&times;</button>
           </div>
           <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Servizi</a></li>
-            <li><a href="#">Chi Siamo</a></li>
-            <li><a href="#">Contatti</a></li>
+            <li class="me-3" v-for=" navlink in navLinks">
+                <router-link :to="{ name: navlink.name }">
+                    {{ navlink.label }}
+                </router-link>
+            </li>
           </ul>
         </aside>
       </transition>

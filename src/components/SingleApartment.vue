@@ -1,7 +1,16 @@
 <script>
 export default {
+    data(){
+        return{
+            link: [
+                    {
+                        label: "Info",
+                        name: "info"
+                    }
+                ]
+        }
+    },
     props: {
-
         title: {
             type: String,
             required: true
@@ -29,10 +38,6 @@ export default {
         images: {
             type: String,
             required: true
-        },
-        visibility: {
-            type: Number,
-            required: true
         }
     }
 }
@@ -49,10 +54,9 @@ export default {
             <p class="card-text">Bagni: {{ bathroom_num }}</p>
             <p class="card-text">Metri quadri: {{ sq_mt }} m²</p>
             <p class="card-text">Indirizzo: {{ address }}</p>
-            <p class="card-text">Visibilità: {{ visibility }}</p>
         </div>
-        <div class="card-body">
-            <a href="#" class="card-link">Dettagli</a>
+        <div>
+            <a href="/info">Info</a>
         </div>
     </div>
 </template>

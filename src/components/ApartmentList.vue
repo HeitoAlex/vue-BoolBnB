@@ -41,7 +41,7 @@
     <div class="container">
         <div class="project-list">
             <router-link v-for="apartment in apartments" :to="{ name: 'apartment' , params:{ id: apartment.id } } ">
-                <SingleApartment :title="apartment.title" :rooms_num="apartment.rooms_num" :beds_num="apartment.beds_num" :bathroom_num="apartment.bathroom_num" :sq_mt="apartment.sq_mt" :address="apartment.address" :images="apartment.images" :visibility="apartment.visibility"/>
+                <SingleApartment v-if="apartment.visibility === 1" :title="apartment.title" :rooms_num="apartment.rooms_num" :beds_num="apartment.beds_num" :bathroom_num="apartment.bathroom_num" :sq_mt="apartment.sq_mt" :address="apartment.address" :images="apartment.images"/>
             </router-link>
         </div>
     </div>

@@ -67,14 +67,14 @@
                     {{ navlink.label }}
                 </router-link>
             </li>
-            <li class="dropdown" @mouseenter="openDropdown('services')" @mouseleave="closeDropdown">
+            <!-- <li class="dropdown" @mouseenter="openDropdown('services')" @mouseleave="closeDropdown">
               <a href="#">Servizi</a>
               <ul v-if="activeDropdown === 'services'" class="dropdown-menu">
                 <li><a href="#">Cerca Appartamento</a></li>
                 <li><a href="#">Crea Appartamento</a></li>
                 <li><a href="#">Acquista Sponsor</a></li>
               </ul>
-            </li>
+            </li> -->
           </ul>
         </nav>
 

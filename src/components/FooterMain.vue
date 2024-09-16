@@ -3,8 +3,6 @@
     /* da vedere */
 </script>
 
-
-
 <!-- Qui va il contenuto di questo elemento (HTML) -->
 <template>
   <footer class="footer">
@@ -12,27 +10,22 @@
   </footer>
 </template>
 
-
-
 <!-- Stile unico per il footer -->
 <style scoped>
-
 .footer {
   background-color: #003f6c; /* Colore principale dello sfondo del footer */
   color: #fefbfa;            /* Colore del testo */
   text-align: center;        /* Allineamento del testo al centro */
-  padding: .2px;           /* Spaziatura superiore e inferiore */
-  position: absolute;
+  padding: .2px;             /* Spaziatura superiore e inferiore */
+  position: fixed;           /* Cambiato da absolute a fixed */
   bottom: 0;
   width: 100%;
   font-size: 0.875rem;       /* Dimensione del font */
+  z-index: 1000;             /* Assicura che il footer sia sopra altri elementi */
 
-    p {
-        margin: 0;
-        font-size: 10px;
-    }
-
+  p {
+    margin: 0;
+    font-size: 10px;
+  }
 }
-
-
 </style>

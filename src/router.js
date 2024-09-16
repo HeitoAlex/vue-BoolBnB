@@ -10,8 +10,13 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
-            path: '/home',
+            path: '/',
             name: 'home',
+            component: AppHome
+        },
+        {
+            path: '/Chi-siamo',
+            name: 'chi siamo',
             component: AppHome
         },
         {
@@ -20,8 +25,8 @@ const router = createRouter({
             component: AppApartment
         },
         {
-            path: '/contacts',
-            name: 'contacts',
+            path: '/contatti',
+            name: 'contatti',
             component: AppContacts
         }
     ]

@@ -1,6 +1,7 @@
 <script>
 export default {
     props: {
+
         title: {
             type: String,
             required: true
@@ -30,7 +31,7 @@ export default {
             required: true
         },
         visibility: {
-            type: String,
+            type: Number,
             required: true
         }
     }

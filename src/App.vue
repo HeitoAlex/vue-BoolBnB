@@ -1,6 +1,6 @@
 <script setup>
 
-  import ProjectList from './components/ProjectList.vue';
+  import ApartmentList from './components/ApartmentList.vue';
   import MainHeader from './components/MainHeader.vue';
   
 </script>

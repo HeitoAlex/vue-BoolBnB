@@ -3,6 +3,7 @@
     import FooterMain from '../components/FooterMain.vue'
     import ProjectList from '../components/ProjectList.vue';
 
+
     export default {
 
         components:{
@@ -20,7 +21,7 @@
 </script>
 
 <template>
-    <HeaderMain /> <!-- Testing -->
+    <HeaderMain />
     <ProjectList/>
     <FooterMain />
 </template>

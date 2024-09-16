@@ -55,7 +55,7 @@ export default {
             <p class="card-text">Metri quadri: {{ sq_mt }} m²</p>
             <p class="card-text">Indirizzo: {{ address }}</p>
         </div>
-        <div>
+        <div class="card-body">
             <a href="/info">Info</a>
         </div>
     </div>

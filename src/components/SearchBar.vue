@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     data() {
         return {
@@ -21,18 +23,12 @@ export default {
     methods: {
         performSearch() {
             if (this.searchQuery.length > 2) {
-                fetch(`http://localhost:8000/api/search?location=${encodeURIComponent(this.searchQuery)}`)
+                axios.get(`http://localhost:8000/api/search?location=${encodeURIComponent(this.searchQuery)}`)
                     .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Errore nella risposta: ' + response.status);
-                        }
-                        return response.json();  
-                    })
-                    .then(data => {
-                        if (data.success) {
-                            this.results = data.results || []; 
+                        if (response.data.success) {
+                            this.results = response.data.results || []; 
                         } else {
-                            console.error('Errore nel backend:', data.message);
+                            console.error('Errore nel backend:', response.data.message);
                             this.results = [];
                         }
                     })

@@ -135,7 +135,7 @@ export default {
         :key="apartment.id"
         :to="{ name: 'apartment', params: { id: apartment.id } }"
       >
-        <SingleApartment
+        <SingleApartment v-if="apartment.visibility === 1"
           :title="apartment.title"
           :rooms_num="apartment.rooms_num"
           :beds_num="apartment.beds_num"

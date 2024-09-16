@@ -14,6 +14,7 @@ export default {
       suggestions: [],     // Suggerimenti di città
       showSuggestions: false,  // Controlla se mostrare i suggerimenti
       debounceTimeout: null,   // Timeout per debounce
+      baseUrl: 'http://localhost:8000/storage/' // URL base per il percorso delle immagini
     };
   },
   methods: {
@@ -90,6 +91,12 @@ export default {
       // Funzione per nascondere i suggerimenti quando l'input perde il focus
       this.showSuggestions = false;
     },
+
+    // Funzione per ottenere l'URL completo dell'immagine
+    getFullImageUrl(imagePath) {
+      if (!imagePath) return ''; // Se non c'è immagine, restituisci una stringa vuota
+      return this.baseUrl + imagePath; // Concatena l'URL di base con il percorso dell'immagine
+    }
   },
   created() {
     // Ottiene gli appartamenti quando il componente è montato
@@ -97,6 +104,7 @@ export default {
   },
 };
 </script>
+
 
 <template>
   <div class="container">

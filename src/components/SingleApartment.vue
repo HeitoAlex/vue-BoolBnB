@@ -1,15 +1,5 @@
 <script>
 export default {
-    data(){
-        return{
-            link: [
-                    {
-                        label: "Info",
-                        name: "info"
-                    }
-                ]
-        }
-    },
     props: {
         title: {
             type: String,
@@ -39,6 +29,13 @@ export default {
             type: String,
             required: true
         }
+    },
+    computed: {
+        fullImageUrl() {
+            // Concatena l'URL base con il percorso dell'immagine
+            const baseUrl = 'http://localhost:8000/storage/';
+            return baseUrl + this.images;
+        }
     }
 }
 </script>
@@ -46,7 +43,8 @@ export default {
 <template>
     <div class="card me-3 mb-2" style="width: 18rem;">
         <div class="card-header">{{ title }}</div>
-        <img :src="images" class="card-img-top" alt="immagine appartamento">
+        <!-- Usa la computed property fullImageUrl per mostrare l'immagine -->
+        <img :src="fullImageUrl" class="card-img-top" alt="immagine appartamento">
         <div class="card-body">
             <h3 class="card-title">{{ title }}</h3>
             <p class="card-text">Stanze: {{ rooms_num }}</p>
@@ -62,5 +60,5 @@ export default {
 </template>
 
 <style scoped>
-
+/* Stili aggiuntivi se necessari */
 </style>

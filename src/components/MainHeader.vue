@@ -8,10 +8,6 @@
                         label: "Home",
                         name: "home"
                     },
-                    // {
-                    //     label: "Project",
-                    //     name: "project"
-                    // },
                     {
                         label: "Contacts",
                         name: "contacts"

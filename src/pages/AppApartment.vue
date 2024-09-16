@@ -42,8 +42,7 @@ export default {
                 :bathroom_num="apartment.bathroom_num" 
                 :sq_mt="apartment.sq_mt" 
                 :address="apartment.address" 
-                :images="apartment.images" 
-                :visibility="apartment.visibility" />
+                :images="apartment.images" />
         </div>
     </div>
 </template>

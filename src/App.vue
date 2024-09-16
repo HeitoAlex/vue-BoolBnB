@@ -1,12 +1,10 @@
 <script setup>
 import ApartmentList from './components/ApartmentList.vue';
 import MainHeader from './components/MainHeader.vue';
-import SearchBar from './components/SearchBar.vue';  
 </script>
 
 <template>
   <MainHeader />
-  <SearchBar style="display: block; visibility: visible; margin:5rem;"></SearchBar>  <router-view></router-view>
   <FooterMain />
 </template>
 

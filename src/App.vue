@@ -6,8 +6,7 @@ import SearchBar from './components/SearchBar.vue';
 
 <template>
   <MainHeader />
-  <SearchBar></SearchBar>
-  <router-view></router-view>
+  <SearchBar style="display: block; visibility: visible; margin:5rem;"></SearchBar>  <router-view></router-view>
   <FooterMain />
 </template>
 

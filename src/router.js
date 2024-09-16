@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import AppHome from "./pages/AppHome.vue";
 import AppApartment from "./pages/AppApartment.vue";
 import AppContacts from "./pages/AppContacts.vue";
+import FormInfo from "./pages/FormInfo.vue";
 
 const router = createRouter({
     
@@ -28,6 +29,11 @@ const router = createRouter({
             path: '/contatti',
             name: 'contatti',
             component: AppContacts
+        },
+        {
+            path: '/info',
+            name: 'info',
+            component: FormInfo
         }
     ]
 });

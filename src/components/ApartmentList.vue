@@ -9,22 +9,21 @@ export default {
   data() {
     return {
       apartments: [],  // Lista di appartamenti
-      searchLocation: '',  // Località di ricerca inserita dall'utente
-      searchRadius: 20,    // Raggio di ricerca predefinito in km
+      searchLocation: '',  // Località di ricerca
+      searchRadius: 20,    // Raggio di ricerca predefinito
       suggestions: [],     // Suggerimenti di città
-      showSuggestions: false,  // Controlla se mostrare i suggerimenti
+      showSuggestions: false,  // Controlla la visualizzazione dei suggerimenti
       debounceTimeout: null,   // Timeout per debounce
       baseUrl: 'http://localhost:8000/storage/' // URL base per il percorso delle immagini
     };
   },
   methods: {
     getApartments() {
-      // Effettua la chiamata al backend con i parametri di ricerca
       axios
         .get('http://127.0.0.1:8000/api/search', {
           params: {
-            location: this.searchLocation,  // Parametro località
-            radius: this.searchRadius,      // Parametro raggio in km
+            location: this.searchLocation,
+            radius: this.searchRadius,
           },
         })
         .then((response) => {
@@ -35,24 +34,22 @@ export default {
         });
     },
 
-    // Funzione debounce per limitare la frequenza delle chiamate API
     debounceSearchLocation() {
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout); // Cancella il precedente timeout
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
 
       if (this.searchLocation.length > 2) {
         this.debounceTimeout = setTimeout(() => {
-          this.getCitySuggestions(); // Ottieni suggerimenti dalle città
-          this.getApartments(); // Effettua la ricerca degli appartamenti
-        }, 300); // Ritardo di 300ms
+          this.getCitySuggestions();
+          this.getApartments();
+        }, 300);
       } else {
-        this.suggestions = []; // Svuota i suggerimenti se ci sono meno di 3 caratteri
+        this.suggestions = [];
         this.showSuggestions = false;
       }
     },
 
-    // Funzione per ottenere i suggerimenti dalla API TomTom
     getCitySuggestions() {
-      const apiKey = 'S14VN8AzM8BoQ73JkRu5N2PqtkZtrrjN'; // Inserisci qui la tua chiave API di TomTom
+      const apiKey = 'S14VN8AzM8BoQ73JkRu5N2PqtkZtrrjN';
       axios
         .get(`https://api.tomtom.com/search/2/search/${encodeURIComponent(this.searchLocation)}.json`, {
           params: {
@@ -79,27 +76,23 @@ export default {
         });
     },
 
-    // Seleziona un suggerimento e lo applica al campo di ricerca
     selectSuggestion(suggestion) {
       this.searchLocation = suggestion;
       this.suggestions = [];
       this.showSuggestions = false;
-      this.getApartments();  // Esegui la ricerca degli appartamenti
+      this.getApartments();
     },
 
     hideSuggestions() {
-      // Funzione per nascondere i suggerimenti quando l'input perde il focus
       this.showSuggestions = false;
     },
 
-    // Funzione per ottenere l'URL completo dell'immagine
     getFullImageUrl(imagePath) {
-      if (!imagePath) return ''; // Se non c'è immagine, restituisci una stringa vuota
-      return this.baseUrl + imagePath; // Concatena l'URL di base con il percorso dell'immagine
+      if (!imagePath) return '';
+      return this.baseUrl + imagePath;
     }
   },
   created() {
-    // Ottiene gli appartamenti quando il componente è montato
     this.getApartments();
   },
 };
@@ -166,7 +159,7 @@ export default {
 }
 
 .search-bar {
-  margin-top: 2rem; 
+  margin-top: 5rem; 
   display: flex;
   gap: 10px; 
   justify-content: space-between; 
@@ -175,7 +168,6 @@ export default {
   background-color: #003f6c; 
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
-  margin-top: 5rem;
 }
 
 .search-bar input {
@@ -202,7 +194,8 @@ export default {
 .project-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  justify-content: center; /* Centra le card */
+  gap: 20px; 
   margin-top: 2rem; 
 }
 

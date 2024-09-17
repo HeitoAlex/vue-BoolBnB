@@ -127,10 +127,9 @@ import axios from 'axios';
         />
 
         <label for="services">Che servizi cerchi?</label>
-        <div v-for="apartments.extra_service in apartments.extra_services">
-            <input type="checkbox" :name="apartments.extra_service.name" id="apartments.extra_service.name">
+        <div v-for="extra_service in apartments.extra_services" :key="extra_service.id">
+            <input type="checkbox" :name="extra_service.name" :id="extra_service.name">
         </div>
-        
     </div>
 
 </template>

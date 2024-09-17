@@ -5,6 +5,7 @@ import AppHome from "./pages/AppHome.vue";
 import AppApartment from "./pages/AppApartment.vue";
 import AppContacts from "./pages/AppContacts.vue";
 import FormInfo from "./pages/FormInfo.vue";
+import AdvancedSearch from "./pages/AdvancedSearch.vue";
 
 const router = createRouter({
     
@@ -34,6 +35,11 @@ const router = createRouter({
             path: '/info',
             name: 'info',
             component: FormInfo
+        },
+        {
+            path: '/AdvancedSearch',
+            name: 'advanced search',
+            component: AdvancedSearch
         }
     ]
 });

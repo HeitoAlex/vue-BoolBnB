@@ -1,25 +1,23 @@
 <script>
-
     import ApartmentList from '../components/ApartmentList.vue';
+    import Jumbo from '../components/Jumbo.vue';
 
     export default {
-
-        components:{
-            ApartmentList
+        components: {
+            ApartmentList,
+            Jumbo 
         },
-
-        data(){
-            return{
-                
-            }
+        data() {
+            return {
+            };
         }
     }
 </script>
 
 <template>
-    <ApartmentList/>
+    <Jumbo /> 
+    <ApartmentList /> 
 </template>
 
 <style scoped>
-
 </style>

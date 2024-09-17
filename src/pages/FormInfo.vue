@@ -8,35 +8,39 @@ export default {
         };
     },
     methods: {
-        async sendMessage() {
-            const url = 'http://localhost:8000/api/messages';  
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        name: this.name,
-                        sender_email: this.email,
-                        message: this.message,
-                    }),
-                });
+    async sendMessage() {
+        const url = 'http://localhost:8000/api/messages';  
+        console.log('URL API:', url);  // Log URL
 
-                const responseText = await response.text();
-                console.log('Risposta dal backend:', responseText);
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: this.name,
+                    sender_email: this.email,
+                    message: this.message,
+                    apartment_id: this.apartment_id, // Include ID appartamento
+                }),
+            });
 
-                if (response.ok) {
-                    alert('Messaggio inviato con successo!');
-                } else {
-                    alert('Errore durante l\'invio del messaggio.');
-                }
-            } catch (error) {
-                console.error('Errore di connessione:', error);
-                alert('Errore di connessione.');
+            const responseText = await response.text();
+            console.log('Risposta dal backend:', responseText);  // risposta
+
+            if (response.ok) {
+                alert('Messaggio inviato con successo!');
+            } else {
+                alert('Errore durante l\'invio del messaggio.');
             }
+        } catch (error) {
+            console.error('Errore di connessione:', error);
+            alert('Errore di connessione.');
         }
     }
+}
+
 }
 </script>
 

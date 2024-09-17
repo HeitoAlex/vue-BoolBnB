@@ -32,7 +32,6 @@ export default {
     },
     computed: {
         fullImageUrl() {
-            // Concatena l'URL base con il percorso dell'immagine
             const baseUrl = 'http://localhost:8000/storage/';
             return baseUrl + this.images;
         }
@@ -41,20 +40,18 @@ export default {
 </script>
 
 <template>
-    <div class="card me-3 mb-2 content-wrapper" style="width: 18rem;">
-        <div class="card-header">{{ title }}</div>
-        <!-- Usa la computed property fullImageUrl per mostrare l'immagine -->
+    <div class="card me-3 mb-2 content-wrapper">
         <img :src="fullImageUrl" class="card-img-top" alt="immagine appartamento">
         <div class="card-body">
-            <h3 class="card-title">{{ title }}</h3>
-            <p class="card-text">Stanze: {{ rooms_num }}</p>
-            <p class="card-text">Letti: {{ beds_num }}</p>
-            <p class="card-text">Bagni: {{ bathroom_num }}</p>
-            <p class="card-text">Metri quadri: {{ sq_mt }} m²</p>
-            <p class="card-text">Indirizzo: {{ address }}</p>
-        </div>
-        <div class="card-body">
-            <a href="/info">Info</a>
+            <div class="card-header">{{ title }}</div>
+            <div class="details">
+                <p class="card-text"><strong>Stanze:</strong> {{ rooms_num }}</p>
+                <p class="card-text"><strong>Letti:</strong> {{ beds_num }}</p>
+                <p class="card-text"><strong>Bagni:</strong> {{ bathroom_num }}</p>
+                <p class="card-text"><strong>Metri quadri:</strong> {{ sq_mt }} m²</p>
+                <p class="card-text"><strong>Indirizzo:</strong> {{ address }}</p>
+            </div>
+            <a href="/info" class="info-button">Info</a>
         </div>
     </div>
 </template>
@@ -62,41 +59,43 @@ export default {
 <style scoped>
 /* Stile della card */
 .card {
-    border: 1px solid #e0e0e0;
+    border: none; /* Rimosso il bordo per un aspetto più pulito */
     border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Aggiunge ombra */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Aggiunge transizioni */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Ombra più pronunciata */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
     display: flex;
-    flex-direction: column; /* Colonne per mantenere la card ordinata */
-    height: 100%; /* Assicura che la card occupi tutta l'altezza disponibile */
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Leggero sollevamento al passaggio del mouse */
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2); /* Ombra più intensa al passaggio del mouse */
 }
 
 .card-img-top {
     height: 200px;
-    object-fit: cover; /* Fa sì che l'immagine si adatti correttamente senza distorcersi */
-    border-bottom: 1px solid #e0e0e0;
+    object-fit: cover; /* Mantiene l'immagine proporzionata */
 }
 
 .card-body {
-    padding: 15px;
+    padding: 20px; /* Maggiore padding */
     text-align: left;
-    flex-grow: 1; /* Questo assicura che il corpo della card cresca per riempire lo spazio */
 }
 
 .card-header {
-    background-color: #f8f9fa;
+    background-color: #003f6c; /* Colore di sfondo della header */
+    color: white; /* Colore del testo */
     font-weight: bold;
     text-align: center;
-    padding: 10px;
-    border-bottom: 1px solid #e0e0e0;
-    font-size: 1.25rem;
+    padding: 15px;
+    border-bottom: none; /* Rimosso il bordo inferiore */
+    font-size: 1.5rem; /* Maggiore dimensione per il titolo */
+    border-radius: 12px 12px 0 0; /* Angoli arrotondati superiori */
 }
 
-.card-title {
-    font-size: 1.5rem;
-    margin-bottom: 0.75rem;
-    color: #003f6c;
+.details {
+    margin: 10px 0; /* Spazio attorno ai dettagli */
 }
 
 .card-text {
@@ -105,34 +104,33 @@ export default {
     color: #555;
 }
 
-/* Stile del pulsante 'Info' */
-.card-body a {
+.info-button {
     display: inline-block;
-    margin-top: auto; /* Spinge il bottone in basso */
-    padding: 8px 16px;
-    background-color: #003f6c;
+    margin-top: 10px; /* Spazio per il pulsante */
+    padding: 10px 20px; /* Maggiore padding per il pulsante */
+    background-color: #007bff; /* Colore del pulsante */
     color: white;
     border-radius: 5px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
+    text-decoration: none; /* Rimosso l'underline */
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.card-body a:hover {
-    background-color: #005b96;
+.info-button:hover {
+    background-color: #0056b3; /* Colore al passaggio del mouse */
+    transform: translateY(-2px); /* Effetto di sollevamento al passaggio del mouse */
 }
 
 /* Imposta il layout delle card */
 .project-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 100px; /* Aggiunge spazio tra le card */
-    margin-top: 20px; /* Spazio aggiuntivo sopra le card */
+    gap: 20px; /* Spazio tra le card */
+    margin-top: 20px; /* Margine sopra le card */
 }
 
 .card {
     flex: 1 1 calc(33.333% - 20px); /* Ogni card occupa circa un terzo della larghezza */
-    min-width: 300px;
-    max-width: 300px; /* Imposta una larghezza massima per uniformare la dimensione */
+    min-width: 300px; /* Larghezza minima */
 }
-
 </style>

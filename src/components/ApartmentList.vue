@@ -105,7 +105,6 @@ export default {
 };
 </script>
 
-
 <template>
   <div class="container">
     <!-- Barra di ricerca -->
@@ -123,6 +122,7 @@ export default {
         placeholder="Raggio in km"
         @input="debounceSearchLocation" 
       />
+      <button @click="getApartments">Cerca</button>
 
       <!-- Lista dei suggerimenti -->
       <ul v-if="showSuggestions && suggestions.length" class="suggestions-list">
@@ -160,56 +160,36 @@ export default {
 
 <style>
 .container {
-  width: 1000px;
-  margin: 0 auto; /* Centra il contenuto */
-}
-
-.project-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px; /* Spazio tra le card */
-  margin-top: 3rem; /* Aggiunge margine sopra le card */
-}
-
-a {
-  margin-bottom: 2rem;
-  margin-top: 2rem
+  max-width: 1200px;
+  margin: 0 auto; 
+  padding: 20px; 
 }
 
 .search-bar {
-  margin-top: 5rem;
+  margin-top: 2rem; 
   display: flex;
-  gap: 10px; /* Spazio tra gli input */
-  justify-content: center;
-  align-items: center;
+  gap: 10px; 
+  justify-content: space-between; 
+  align-items: center; 
   padding: 1rem;
-  background-color: #002b4d;
+  background-color: #003f6c; 
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombra leggera per dare profondità */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+  margin-top: 5rem;
 }
 
 .search-bar input {
   padding: 0.75rem;
   font-size: 1rem;
-  width: 300px; /* Campo di input più largo */
+  width: 300px; 
   border: 1px solid #ccc;
   border-radius: 8px;
   transition: all 0.3s ease;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); /* Leggera ombreggiatura interna */
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
 
-.search-bar input:focus {
-  outline: none;
-  border-color: #007bff; /* Colore di focus */
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3); /* Effetto di focus */
-}
-
-.search-bar input[type="number"] {
-  width: 120px; /* Campo di input per il raggio in km più piccolo */
-}
-
-button {
-  padding: 0.75rem 1.5rem;
+.search-bar button {
+  padding: 0.75rem 1.5rem; 
   font-size: 1rem;
   background-color: #007bff;
   color: white;
@@ -219,9 +199,11 @@ button {
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px); /* Leggero sollevamento al passaggio del mouse */
+.project-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 2rem; 
 }
 
 .suggestions-list {
@@ -232,7 +214,7 @@ button:hover {
   border: 1px solid #ccc;
   max-width: 300px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Aggiunge un'ombra leggera */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: absolute;
   z-index: 1000;
 }
@@ -247,21 +229,17 @@ button:hover {
   background-color: #f0f0f0;
 }
 
-/* Stile dei campi input in focus */
-input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
-}
+/* responsive */
+@media (max-width: 768px) {
+  .search-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-input[type="text"],
-input[type="number"] {
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  padding: 0.75rem;
-  width: 250px;
-  font-size: 1rem;
-  transition: border-color 0.2s ease;
+  .search-bar input,
+  .search-bar button {
+    width: 100%; 
+    margin-bottom: 10px;
+  }
 }
-
 </style>

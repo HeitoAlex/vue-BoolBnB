@@ -59,9 +59,9 @@ export default {
 <style scoped>
 /* Stile della card */
 .card {
-    border: none; /* Rimosso il bordo per un aspetto più pulito */
+    border: none; 
     border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Ombra più pronunciata */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); 
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
     display: flex;
@@ -69,33 +69,33 @@ export default {
 }
 
 .card:hover {
-    transform: translateY(-5px); /* Leggero sollevamento al passaggio del mouse */
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2); /* Ombra più intensa al passaggio del mouse */
+    transform: translateY(-5px); 
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2); 
 }
 
 .card-img-top {
     height: 200px;
-    object-fit: cover; /* Mantiene l'immagine proporzionata */
+    object-fit: cover; 
 }
 
 .card-body {
-    padding: 20px; /* Maggiore padding */
+    padding: 20px;
     text-align: left;
 }
 
 .card-header {
-    background-color: #003f6c; /* Colore di sfondo della header */
-    color: white; /* Colore del testo */
+    background-color: #003f6c;
+    color: white; 
     font-weight: bold;
     text-align: center;
     padding: 15px;
-    border-bottom: none; /* Rimosso il bordo inferiore */
-    font-size: 1.5rem; /* Maggiore dimensione per il titolo */
-    border-radius: 12px 12px 0 0; /* Angoli arrotondati superiori */
+    border-bottom: none; 
+    font-size: 1.5rem; 
+    border-radius: 12px 12px 0 0; 
 }
 
 .details {
-    margin: 10px 0; /* Spazio attorno ai dettagli */
+    margin: 10px 0;
 }
 
 .card-text {
@@ -106,31 +106,31 @@ export default {
 
 .info-button {
     display: inline-block;
-    margin-top: 10px; /* Spazio per il pulsante */
-    padding: 10px 20px; /* Maggiore padding per il pulsante */
-    background-color: #007bff; /* Colore del pulsante */
+    margin-top: 10px; 
+    padding: 10px 20px; 
+    background-color: #007bff; 
     color: white;
     border-radius: 5px;
-    text-decoration: none; /* Rimosso l'underline */
+    text-decoration: none; 
     text-align: center;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .info-button:hover {
-    background-color: #0056b3; /* Colore al passaggio del mouse */
-    transform: translateY(-2px); /* Effetto di sollevamento al passaggio del mouse */
+    background-color: #0056b3; 
+    transform: translateY(-2px); 
 }
 
-/* Imposta il layout delle card */
+
 .project-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; /* Spazio tra le card */
-    margin-top: 20px; /* Margine sopra le card */
+    gap: 20px; 
+    margin-top: 20px;
 }
 
 .card {
-    flex: 1 1 calc(33.333% - 20px); /* Ogni card occupa circa un terzo della larghezza */
-    min-width: 300px; /* Larghezza minima */
+    flex: 1 1 calc(33.333% - 20px); 
+    min-width: 300px; 
 }
 </style>

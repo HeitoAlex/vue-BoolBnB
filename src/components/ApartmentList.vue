@@ -8,12 +8,12 @@ export default {
   },
   data() {
     return {
-      apartments: [],  // Lista di appartamenti
-      searchLocation: '',  // Località di ricerca
-      searchRadius: 20,    // Raggio di ricerca predefinito
-      suggestions: [],     // Suggerimenti di città
-      showSuggestions: false,  // Controlla la visualizzazione dei suggerimenti
-      debounceTimeout: null,   // Timeout per debounce
+      apartments: [], 
+      searchLocation: '',  
+      searchRadius: 20,   
+      suggestions: [],    
+      showSuggestions: false,  
+      debounceTimeout: null,   
       baseUrl: 'http://localhost:8000/storage/' // URL base per il percorso delle immagini
     };
   },
@@ -194,7 +194,7 @@ export default {
 .project-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; /* Centra le card */
+  justify-content: center; 
   gap: 20px; 
   margin-top: 2rem; 
 }

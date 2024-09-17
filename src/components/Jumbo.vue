@@ -79,6 +79,7 @@ export default {
 }
 
 .content h1 {
+    cursor: pointer;
     font-size: 5rem; 
     color: #fff;
     font-weight: 600;

@@ -1,7 +1,11 @@
 @use '../../node_modules/bootstrap/scss/bootstrap.scss';
 
 body{
-    background-color: rgb(255, 244, 248);
+
+    /* L'idea di questo background color sarebbe quella che in alto a destra è più chiaro */
+    /* che rappresenta il giorno, mentre scendendo più a fondo nella pagina lentamente il gradiente diventa più scuro */
+    /* con un Blu notte, proprio a rapressentare la sera. */    
+    background: linear-gradient(135deg, #f8f9fa, #ffc0cb, #0a3d62);
 }
 
 .content-wrapper {

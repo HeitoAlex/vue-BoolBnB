@@ -16,8 +16,8 @@
   background-color: #003f6c; /* Colore principale dello sfondo del footer */
   color: #fefbfa;            /* Colore del testo */
   text-align: center;        /* Allineamento del testo al centro */
-  padding: .2px;             /* Spaziatura superiore e inferiore */
-  position: fixed;           /* Cambiato da absolute a fixed */
+  padding: .2px;           /* Spaziatura superiore e inferiore */
+
   bottom: 0;
   width: 100%;
   font-size: 0.875rem;       /* Dimensione del font */

@@ -134,6 +134,9 @@ export default {
           {{ suggestion }}
         </li>
       </ul>
+      <div>
+        <a href="/AdvancedSearch">Cerca</a>
+      </div>
     </div>
 
     <!-- Lista degli appartamenti filtrati -->

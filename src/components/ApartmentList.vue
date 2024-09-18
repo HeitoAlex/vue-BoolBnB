@@ -108,7 +108,6 @@ export default {
 
 
 
-
 <template>
   <div class="container">
     <!-- Barra di ricerca -->
@@ -154,6 +153,11 @@ export default {
             <p class="card-text">Bagni: {{ apartment.bathroom_num }}</p>
             <p class="card-text">Superficie: {{ apartment.sq_mt }} mq</p>
 
+            <!-- Se è sponsorizzato, mostra il nome dello sponsor -->
+            <p v-if="apartment.sponsors && apartment.sponsors.length > 0" class="text-warning">
+              SPONSORED
+            </p>
+
             <!-- Pulsante per leggere di più -->
             <router-link 
               :to="{ name: 'apartment', params: { id: apartment.id } }" 
@@ -166,6 +170,7 @@ export default {
     </div>
   </div>
 </template>
+
 
 <style>
 .container {
@@ -198,6 +203,11 @@ export default {
 
 .card-text {
   margin-bottom: 0.75rem;
+}
+
+.text-warning {
+  color: #f39c12;
+  font-weight: bold;
 }
 
 .btn-primary {

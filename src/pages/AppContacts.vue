@@ -1,4 +1,5 @@
 <script>
+import ApartmentList from '../components/ApartmentList.vue';
 import SearchComponent from '../components/SearchComponent.vue';
 
 
@@ -6,6 +7,7 @@ import SearchComponent from '../components/SearchComponent.vue';
 
         components:{
             SearchComponent,
+            ApartmentList,
         },
 
 
@@ -19,7 +21,8 @@ import SearchComponent from '../components/SearchComponent.vue';
 
 <template>
     
-        <SearchComponent> </SearchComponent>
+        <SearchComponent />
+        <ApartmentList />
     
 </template>
 

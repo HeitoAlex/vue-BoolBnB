@@ -19,19 +19,34 @@ export default {
   },
   methods: {
     getApartments() {
-      axios
-        .get('http://127.0.0.1:8000/api/search', {
-          params: {
-            location: this.searchLocation,
-            radius: this.searchRadius,
-          },
-        })
-        .then((response) => {
-          this.apartments = response.data.results;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (this.searchLocation && this.searchLocation.length > 2) {
+        // Se la location è specificata e ha più di 2 caratteri, effettua la ricerca
+        axios
+          .get('http://127.0.0.1:8000/api/search', {
+            params: {
+              location: this.searchLocation,
+              radius: this.searchRadius,
+            },
+          })
+          .then((response) => {
+            this.apartments = response.data.results;
+          })
+          .catch((error) => {
+            console.log(error);
+            this.apartments = []; // Resetta la lista degli appartamenti in caso di errore
+          });
+      } else {
+        // Se la location non è specificata, recupera tutti gli appartamenti
+        axios
+          .get('http://127.0.0.1:8000/api/apartments')
+          .then((response) => {
+            this.apartments = response.data.results;
+          })
+          .catch((error) => {
+            console.log(error);
+            this.apartments = []; // Resetta la lista degli appartamenti in caso di errore
+          });
+      }
     },
 
     debounceSearchLocation() {

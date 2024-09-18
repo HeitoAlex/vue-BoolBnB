@@ -8,48 +8,51 @@ export default {
   },
   data() {
     return {
-      apartments: [], 
-      searchLocation: '',  
-      searchRadius: 20,   
-      suggestions: [],    
-      showSuggestions: false,  
-      debounceTimeout: null,   
+      apartments: [],  // Lista di appartamenti
+      searchLocation: '',  // Località di ricerca inserita dall'utente
+      searchRadius: 20,    // Raggio di ricerca predefinito in km
+      suggestions: [],     // Suggerimenti di città
+      showSuggestions: false,  // Controlla se mostrare i suggerimenti
+      debounceTimeout: null,   // Timeout per debounce
       baseUrl: 'http://localhost:8000/storage/' // URL base per il percorso delle immagini
     };
   },
   methods: {
+    // Effettua la chiamata al backend con i parametri di ricerca
     getApartments() {
       axios
         .get('http://127.0.0.1:8000/api/search', {
           params: {
-            location: this.searchLocation,
-            radius: this.searchRadius,
+            location: this.searchLocation,  // Parametro località
+            radius: this.searchRadius,      // Parametro raggio in km
           },
         })
         .then((response) => {
-          this.apartments = response.data.results;
+          this.apartments = response.data.results; // Assegna i risultati alla lista di appartamenti
         })
         .catch((error) => {
-          console.log(error);
+          console.log('Errore durante il fetch degli appartamenti:', error);
         });
     },
 
+    // Funzione debounce per limitare la frequenza delle chiamate API
     debounceSearchLocation() {
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout); // Cancella il timeout precedente
 
-      if (this.searchLocation.length > 2) {
+      if (this.searchLocation.length > 2) { // Cerca solo se ci sono più di 2 caratteri
         this.debounceTimeout = setTimeout(() => {
-          this.getCitySuggestions();
-          this.getApartments();
-        }, 300);
+          this.getCitySuggestions(); // Ottieni suggerimenti
+          this.getApartments(); // Aggiorna la lista degli appartamenti
+        }, 300); // Ritardo di 300ms per debounce
       } else {
-        this.suggestions = [];
+        this.suggestions = []; // Cancella i suggerimenti se l'input è vuoto o con pochi caratteri
         this.showSuggestions = false;
       }
     },
 
+    // Funzione per ottenere i suggerimenti dalla API TomTom
     getCitySuggestions() {
-      const apiKey = 'S14VN8AzM8BoQ73JkRu5N2PqtkZtrrjN';
+      const apiKey = 'S14VN8AzM8BoQ73JkRu5N2PqtkZtrrjN'; // Chiave API TomTom
       axios
         .get(`https://api.tomtom.com/search/2/search/${encodeURIComponent(this.searchLocation)}.json`, {
           params: {
@@ -62,41 +65,49 @@ export default {
         })
         .then((response) => {
           if (response.data.results && response.data.results.length > 0) {
+            // Mappa i risultati sui suggerimenti
             this.suggestions = response.data.results
               .filter(item => item.address && item.address.freeformAddress)
               .map(item => item.address.freeformAddress);
-            this.showSuggestions = true;
+            this.showSuggestions = true; // Mostra i suggerimenti
           } else {
-            this.suggestions = [];
+            this.suggestions = []; // Cancella i suggerimenti se non ci sono risultati
             this.showSuggestions = false;
           }
         })
         .catch((error) => {
-          console.error('Errore nel fetch:', error);
+          console.error('Errore nel fetch dei suggerimenti:', error);
         });
     },
 
+    // Seleziona un suggerimento e lo applica al campo di ricerca
     selectSuggestion(suggestion) {
-      this.searchLocation = suggestion;
-      this.suggestions = [];
+      this.searchLocation = suggestion; // Aggiorna il campo di ricerca con il suggerimento selezionato
+      this.suggestions = []; // Nascondi i suggerimenti
       this.showSuggestions = false;
-      this.getApartments();
+      this.getApartments(); // Effettua la ricerca degli appartamenti
     },
 
     hideSuggestions() {
-      this.showSuggestions = false;
+      this.showSuggestions = false; // Nascondi i suggerimenti quando l'input perde il focus
     },
 
+    // Funzione per ottenere l'URL completo dell'immagine
     getFullImageUrl(imagePath) {
-      if (!imagePath) return '';
-      return this.baseUrl + imagePath;
+      if (!imagePath) return ''; // Se non c'è immagine, restituisci una stringa vuota
+      return this.baseUrl + imagePath; // Concatena l'URL di base con il percorso dell'immagine
     }
   },
+
+  // Monta gli appartamenti quando il componente viene creato
   created() {
     this.getApartments();
   },
 };
 </script>
+
+
+
 
 <template>
   <div class="container">
@@ -115,7 +126,6 @@ export default {
         placeholder="Raggio in km"
         @input="debounceSearchLocation" 
       />
-      <button @click="getApartments">Cerca</button>
 
       <!-- Lista dei suggerimenti -->
       <ul v-if="showSuggestions && suggestions.length" class="suggestions-list">
@@ -133,109 +143,76 @@ export default {
     </div>
 
     <!-- Lista degli appartamenti filtrati -->
-    <div class="project-list">
-      <router-link
-        v-for="apartment in apartments"
-        :key="apartment.id"
-        :to="{ name: 'apartment', params: { id: apartment.id } }"
-      >
-        <SingleApartment v-if="apartment.visibility === 1"
-          :title="apartment.title"
-          :rooms_num="apartment.rooms_num"
-          :beds_num="apartment.beds_num"
-          :bathroom_num="apartment.bathroom_num"
-          :sq_mt="apartment.sq_mt"
-          :address="apartment.address"
-          :images="apartment.images"
-          :visibility="apartment.visibility"
-        />
-      </router-link>
+    <div class="row">
+      <div class="col-md-4" v-for="apartment in apartments" :key="apartment.id">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title">{{ apartment.title }}</h5>
+            <p class="card-text">Indirizzo: {{ apartment.address }}</p>
+            <p class="card-text">Stanze: {{ apartment.rooms_num }}</p>
+            <p class="card-text">Letti: {{ apartment.beds_num }}</p>
+            <p class="card-text">Bagni: {{ apartment.bathroom_num }}</p>
+            <p class="card-text">Superficie: {{ apartment.sq_mt }} mq</p>
+
+            <!-- Pulsante per leggere di più -->
+            <router-link 
+              :to="{ name: 'apartment', params: { id: apartment.id } }" 
+              class="btn btn-primary">
+              Leggi di più
+            </router-link>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style>
 .container {
-  max-width: 1200px;
-  margin: 0 auto; 
-  padding: 20px; 
+  width: 1000px;
+  margin: 0 auto; /* Centra il contenuto */
 }
 
-.search-bar {
-  margin-top: 5rem; 
+.row {
   display: flex;
-  gap: 10px; 
-  justify-content: space-between; 
-  align-items: center; 
-  padding: 1rem;
-  background-color: #003f6c; 
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+  flex-wrap: wrap;
+  gap: 20px; /* Spazio tra le card */
+  margin-top: 3rem; /* Aggiunge margine sopra le card */
 }
 
-.search-bar input {
-  padding: 0.75rem;
-  font-size: 1rem;
-  width: 300px; 
-  border: 1px solid #ccc;
+.card {
+  width: 100%;
+  background-color: white;
   border-radius: 8px;
-  transition: all 0.3s ease;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.search-bar button {
-  padding: 0.75rem 1.5rem; 
-  font-size: 1rem;
+.card-body {
+  padding: 20px;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.card-text {
+  margin-bottom: 0.75rem;
+}
+
+.btn-primary {
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.project-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center; 
-  gap: 20px; 
-  margin-top: 2rem; 
-}
-
-.suggestions-list {
-  list-style-type: none;
-  padding: 0;
-  margin-top: 0.5rem;
-  background-color: white;
-  border: 1px solid #ccc;
-  max-width: 300px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  position: absolute;
-  z-index: 1000;
-}
-
-.suggestions-list li {
-  padding: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  text-decoration: none;
+  display: inline-block;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.suggestions-list li:hover {
-  background-color: #f0f0f0;
-}
-
-/* responsive */
-@media (max-width: 768px) {
-  .search-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-bar input,
-  .search-bar button {
-    width: 100%; 
-    margin-bottom: 10px;
-  }
+.btn-primary:hover {
+  background-color: #0056b3;
 }
 </style>

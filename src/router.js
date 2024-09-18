@@ -40,7 +40,12 @@ const router = createRouter({
             path: '/AdvancedSearch',
             name: 'advanced search',
             component: AdvancedSearch
-        }
+        },
+        {
+            path: '/info/:id', // La rotta con l'ID dell'appartamento
+            name: 'formInfo',
+            component: FormInfo
+          },
     ]
 });
 

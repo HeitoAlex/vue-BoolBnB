@@ -1,52 +1,5 @@
-<script>
-export default {
-  name: 'HeaderMain',
-  data() {
-    return {
-      navLinks: [
-        {
-          label: "Home",
-          name: "home"
-        },
-        {
-          label: "Chi siamo",
-          name: "chi siamo"
-        },
-        {
-          label: "Contatti",
-          name: "contatti"
-        },
-      ],
-      isScrolled: false,
-      activeDropdown: null,
-      isSidebarOpen: false,
-    };
-  },
-  created() {
-    window.addEventListener('scroll', this.handleScroll);
-  },
-  destroyed() {
-    window.removeEventListener('scroll', this.handleScroll);
-  },
-  methods: {
-    handleScroll() {
-      this.isScrolled = window.scrollY > 50;
-    },
-    openDropdown(menu) {
-      this.activeDropdown = menu;
-    },
-    closeDropdown() {
-      this.activeDropdown = null;
-    },
-    toggleSidebar() {
-      this.isSidebarOpen = !this.isSidebarOpen;
-    },
-  },
-};
-</script>
-
 <template>
-  <header :class="{'header-main': true, 'scrolled': isScrolled}">
+  <header :class="{'header-main': true, 'scrolled': isScrolled, 'mobile': isMobile}">
     <div class="container">
 
       <!-- Logo a Sinistra dell'header -->
@@ -55,7 +8,7 @@ export default {
       </div>
 
       <!-- Navigazione -->
-      <nav class="navigation">
+      <nav class="navigation" v-if="!isMobile">
         <ul>
           <li class="me-3" v-for="navlink in navLinks" :key="navlink.name">
             <router-link :to="{ name: navlink.name }">
@@ -67,11 +20,9 @@ export default {
 
       <!-- Azioni -->
       <div class="actions">
-        <!-- Bottone Login o Registrati con link a http://localhost:8000/ -->
-        <a href="http://localhost:8000/" class="btn-primary">Accedi</a>
-
-        <!-- Bottone per togglare la sidebar -->
-        <div class="menu-toggle" @click="toggleSidebar">
+        <a v-if="!isMobile" href="http://localhost:8000/login" class="btn-primary">Accedi</a>
+        <a v-if="!isMobile" href="http://localhost:8000/register" class="btn-primary">Registrati</a>
+        <div class="menu-toggle" v-if="isMobile" @click="toggleSidebar">
           <span></span>
           <span></span>
           <span></span>
@@ -80,7 +31,6 @@ export default {
 
     </div>
 
-    <!-- Sidebar per dispositivi mobili -->
     <transition name="slide">
       <aside v-if="isSidebarOpen" class="sidebar">
         <div class="sidebar-header">
@@ -93,33 +43,77 @@ export default {
               {{ navlink.label }}
             </router-link>
           </li>
+          <li>
+            <a href="http://localhost:8000/login">Accedi</a>
+          </li>
+          <li>
+            <a href="http://localhost:8000/register">Registrati</a>
+          </li>
         </ul>
       </aside>
     </transition>
   </header>
 </template>
 
+<script>
+export default {
+  name: 'HeaderMain',
+  data() {
+    return {
+      navLinks: [
+        { label: "Home", name: "home" },
+        { label: "Chi siamo", name: "chi siamo" },
+        { label: "Contatti", name: "contatti" },
+      ],
+      isScrolled: false,
+      isSidebarOpen: false,
+      isMobile: window.innerWidth < 992, // controllo delle dimensioni
+    };
+  },
+  created() {
+    window.addEventListener('scroll', this.handleScroll);
+    window.addEventListener('resize', this.checkMobile); // controllo delle dimensioni
+  },
+  destroyed() {
+    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('resize', this.checkMobile);
+  },
+  methods: {
+    handleScroll() {
+      this.isScrolled = window.scrollY > 50;
+    },
+    checkMobile() {
+      this.isMobile = window.innerWidth < 992; // controllo per la risoluzione per i dispositivi mobile
+    },
+    toggleSidebar() {
+      this.isSidebarOpen = !this.isSidebarOpen;
+    },
+  },
+};
+</script>
+
 <style lang="scss" scoped>
 .header-main {
-  background-color: #003f6c;
+  background-color: #003f6c; 
   position: fixed;
   top: 0;
   width: 100%;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  height: 4.3rem; 
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease; 
   z-index: 1000;
 
   &.scrolled {
-    background-color: #fefbfa;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
   }
 
   .container {
-    max-width: 1200px;
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem 2rem;
+    height: 100%;
+    padding: 0 2rem; 
   }
 
   .logo img {
@@ -155,7 +149,7 @@ export default {
     align-items: center;
 
     .btn-primary {
-      padding: 0.5rem 1rem;
+      padding: 0.3rem 0.8rem; 
       background-color: #a34a62;
       color: #fefbfa;
       text-decoration: none;
@@ -167,10 +161,12 @@ export default {
         border-color: #a34a62;
         background-color: #002b4d;
       }
+
+      margin-left: 1rem;
     }
 
     .menu-toggle {
-      display: none;
+      display: flex; 
       flex-direction: column;
       cursor: pointer;
       margin-left: 1rem;
@@ -178,7 +174,7 @@ export default {
       span {
         height: 3px;
         width: 25px;
-        background: #003f6c;
+        background: #ffffff;
         margin-bottom: 5px;
         border-radius: 2px;
         transition: all 0.3s;
@@ -187,7 +183,7 @@ export default {
   }
 }
 
-/* Sidebar per dispositivi mobili */
+/* Sidebar per mobile */
 .sidebar {
   position: fixed;
   top: 0;
@@ -239,7 +235,7 @@ export default {
   }
 }
 
-/* Transizione per la sidebar */
+/* Animazioni delle Sidebar */
 .slide-enter-active, .slide-leave-active {
   transition: transform 0.3s ease;
 }
@@ -256,18 +252,19 @@ export default {
   transform: translateX(100%);
 }
 
+/* Media Queries per layout mobile */
 @media (max-width: 992px) {
   .navigation {
-    display: none;
+    display: none; 
   }
 
   .actions {
     .btn-primary {
-      display: none;
+      display: none; 
     }
 
     .menu-toggle {
-      display: flex;
+      display: flex; 
     }
   }
 }

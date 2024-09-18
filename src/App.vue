@@ -15,4 +15,8 @@
 <style lang="scss">
   @use './styles/general.scss';
 
+#app {
+  cursor: url('...'), auto; /* Magari potremmo crearne uno personalizzato?.. */
+}
+
 </style>

@@ -8,23 +8,22 @@ export default {
   },
   data() {
     return {
-      apartments: [],  // Lista di appartamenti
-      searchLocation: '',  // Località di ricerca inserita dall'utente
-      searchRadius: 20,    // Raggio di ricerca predefinito in km
-      suggestions: [],     // Suggerimenti di città
-      showSuggestions: false,  // Controlla se mostrare i suggerimenti
-      debounceTimeout: null,   // Timeout per debounce
+      apartments: [], 
+      searchLocation: '',  
+      searchRadius: 20,   
+      suggestions: [],    
+      showSuggestions: false,  
+      debounceTimeout: null,   
       baseUrl: 'http://localhost:8000/storage/' // URL base per il percorso delle immagini
     };
   },
   methods: {
     getApartments() {
-      // Effettua la chiamata al backend con i parametri di ricerca
       axios
         .get('http://127.0.0.1:8000/api/search', {
           params: {
-            location: this.searchLocation,  // Parametro località
-            radius: this.searchRadius,      // Parametro raggio in km
+            location: this.searchLocation,
+            radius: this.searchRadius,
           },
         })
         .then((response) => {
@@ -35,24 +34,22 @@ export default {
         });
     },
 
-    // Funzione debounce per limitare la frequenza delle chiamate API
     debounceSearchLocation() {
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout); // Cancella il precedente timeout
+      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
 
       if (this.searchLocation.length > 2) {
         this.debounceTimeout = setTimeout(() => {
-          this.getCitySuggestions(); // Ottieni suggerimenti dalle città
-          this.getApartments(); // Effettua la ricerca degli appartamenti
-        }, 300); // Ritardo di 300ms
+          this.getCitySuggestions();
+          this.getApartments();
+        }, 300);
       } else {
-        this.suggestions = []; // Svuota i suggerimenti se ci sono meno di 3 caratteri
+        this.suggestions = [];
         this.showSuggestions = false;
       }
     },
 
-    // Funzione per ottenere i suggerimenti dalla API TomTom
     getCitySuggestions() {
-      const apiKey = 'S14VN8AzM8BoQ73JkRu5N2PqtkZtrrjN'; // Inserisci qui la tua chiave API di TomTom
+      const apiKey = 'S14VN8AzM8BoQ73JkRu5N2PqtkZtrrjN';
       axios
         .get(`https://api.tomtom.com/search/2/search/${encodeURIComponent(this.searchLocation)}.json`, {
           params: {
@@ -79,32 +76,27 @@ export default {
         });
     },
 
-    // Seleziona un suggerimento e lo applica al campo di ricerca
     selectSuggestion(suggestion) {
       this.searchLocation = suggestion;
       this.suggestions = [];
       this.showSuggestions = false;
-      this.getApartments();  // Esegui la ricerca degli appartamenti
+      this.getApartments();
     },
 
     hideSuggestions() {
-      // Funzione per nascondere i suggerimenti quando l'input perde il focus
       this.showSuggestions = false;
     },
 
-    // Funzione per ottenere l'URL completo dell'immagine
     getFullImageUrl(imagePath) {
-      if (!imagePath) return ''; // Se non c'è immagine, restituisci una stringa vuota
-      return this.baseUrl + imagePath; // Concatena l'URL di base con il percorso dell'immagine
+      if (!imagePath) return '';
+      return this.baseUrl + imagePath;
     }
   },
   created() {
-    // Ottiene gli appartamenti quando il componente è montato
     this.getApartments();
   },
 };
 </script>
-
 
 <template>
   <div class="container">
@@ -123,6 +115,7 @@ export default {
         placeholder="Raggio in km"
         @input="debounceSearchLocation" 
       />
+      <button @click="getApartments">Cerca</button>
 
       <!-- Lista dei suggerimenti -->
       <ul v-if="showSuggestions && suggestions.length" class="suggestions-list">
@@ -163,56 +156,35 @@ export default {
 
 <style>
 .container {
-  width: 1000px;
-  margin: 0 auto; /* Centra il contenuto */
-}
-
-.project-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px; /* Spazio tra le card */
-  margin-top: 3rem; /* Aggiunge margine sopra le card */
-}
-
-a {
-  margin-bottom: 2rem;
-  margin-top: 2rem
+  max-width: 1200px;
+  margin: 0 auto; 
+  padding: 20px; 
 }
 
 .search-bar {
-  margin-top: 5rem;
+  margin-top: 5rem; 
   display: flex;
-  gap: 10px; /* Spazio tra gli input */
-  justify-content: center;
-  align-items: center;
+  gap: 10px; 
+  justify-content: space-between; 
+  align-items: center; 
   padding: 1rem;
-  background-color: #002b4d;
+  background-color: #003f6c; 
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombra leggera per dare profondità */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
 }
 
 .search-bar input {
   padding: 0.75rem;
   font-size: 1rem;
-  width: 300px; /* Campo di input più largo */
+  width: 300px; 
   border: 1px solid #ccc;
   border-radius: 8px;
   transition: all 0.3s ease;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); /* Leggera ombreggiatura interna */
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
 
-.search-bar input:focus {
-  outline: none;
-  border-color: #007bff; /* Colore di focus */
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3); /* Effetto di focus */
-}
-
-.search-bar input[type="number"] {
-  width: 120px; /* Campo di input per il raggio in km più piccolo */
-}
-
-button {
-  padding: 0.75rem 1.5rem;
+.search-bar button {
+  padding: 0.75rem 1.5rem; 
   font-size: 1rem;
   background-color: #007bff;
   color: white;
@@ -222,9 +194,12 @@ button {
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px); /* Leggero sollevamento al passaggio del mouse */
+.project-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; 
+  gap: 20px; 
+  margin-top: 2rem; 
 }
 
 .suggestions-list {
@@ -235,7 +210,7 @@ button:hover {
   border: 1px solid #ccc;
   max-width: 300px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Aggiunge un'ombra leggera */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: absolute;
   z-index: 1000;
 }
@@ -250,21 +225,17 @@ button:hover {
   background-color: #f0f0f0;
 }
 
-/* Stile dei campi input in focus */
-input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
-}
+/* responsive */
+@media (max-width: 768px) {
+  .search-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-input[type="text"],
-input[type="number"] {
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  padding: 0.75rem;
-  width: 250px;
-  font-size: 1rem;
-  transition: border-color 0.2s ease;
+  .search-bar input,
+  .search-bar button {
+    width: 100%; 
+    margin-bottom: 10px;
+  }
 }
-
 </style>

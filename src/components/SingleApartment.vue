@@ -1,6 +1,10 @@
 <script>
 export default {
     props: {
+        id: {
+            type: Number,
+            required: true
+        },
         title: {
             type: String,
             required: true
@@ -51,7 +55,8 @@ export default {
                 <p class="card-text"><strong>Metri quadri:</strong> {{ sq_mt }} m²</p>
                 <p class="card-text"><strong>Indirizzo:</strong> {{ address }}</p>
             </div>
-            <a href="/info" class="info-button">Info</a>
+            <!-- Usa router-link per passare l'id dell'appartamento -->
+            <router-link :to="{ name: 'formInfo', params: { id: id } }" class="info-button">Info</router-link>
         </div>
     </div>
 </template>
@@ -120,7 +125,6 @@ export default {
     background-color: #0056b3; 
     transform: translateY(-2px); 
 }
-
 
 .project-list {
     display: flex;

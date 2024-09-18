@@ -4,43 +4,48 @@ export default {
         return {
             name: '',
             email: '',
-            message: ''
+            message: '',
+            apartment_id: null // Aggiungi l'ID dell'appartamento
         };
     },
+    mounted() {
+        // Recupera l'id dell'appartamento dalla route
+        this.apartment_id = this.$route.params.id;
+        console.log('ID dell\'appartamento:', this.apartment_id);
+    },
     methods: {
-    async sendMessage() {
-        const url = 'http://localhost:8000/api/messages';  
-        console.log('URL API:', url);  // Log URL
+        async sendMessage() {
+            const url = 'http://localhost:8000/api/messages';
+            console.log('URL API:', url); // Log URL
 
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: this.name,
-                    sender_email: this.email,
-                    message: this.message,
-                    apartment_id: this.apartment_id, // Include ID appartamento
-                }),
-            });
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: this.name,
+                        sender_email: this.email,
+                        message: this.message,
+                        apartment_id: this.apartment_id, // Includi l'ID dell'appartamento
+                    }),
+                });
 
-            const responseText = await response.text();
-            console.log('Risposta dal backend:', responseText);  // risposta
+                const responseText = await response.text();
+                console.log('Risposta dal backend:', responseText); // Log della risposta
 
-            if (response.ok) {
-                alert('Messaggio inviato con successo!');
-            } else {
-                alert('Errore durante l\'invio del messaggio.');
+                if (response.ok) {
+                    alert('Messaggio inviato con successo!');
+                } else {
+                    alert('Errore durante l\'invio del messaggio.');
+                }
+            } catch (error) {
+                console.error('Errore di connessione:', error);
+                alert('Errore di connessione.');
             }
-        } catch (error) {
-            console.error('Errore di connessione:', error);
-            alert('Errore di connessione.');
         }
     }
-}
-
 }
 </script>
 

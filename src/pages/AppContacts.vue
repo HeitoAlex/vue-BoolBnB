@@ -1,6 +1,14 @@
 <script>
+import SearchComponent from '../components/SearchComponent.vue';
+
 
     export default {
+
+        components:{
+            SearchComponent,
+        },
+
+
         data(){
             return{
                 
@@ -10,9 +18,13 @@
 </script>
 
 <template>
-    <h1>Contacts</h1>
+    
+        <SearchComponent> </SearchComponent>
+    
 </template>
 
 <style scoped>
-
+    body{
+        margin-top: 3rem;
+    }
 </style>

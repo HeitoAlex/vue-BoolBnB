@@ -1,11 +1,14 @@
 <script>
-    import ApartmentList from '../components/ApartmentList.vue';
+    // import SearchComponent from '@/components/SearchComponent.vue';
+    import SearchComponent from '@/components/SearchComponent.vue';
+import ApartmentList from '../components/ApartmentList.vue';
     import Jumbo from '../components/Jumbo.vue';
 
     export default {
         components: {
             ApartmentList,
-            Jumbo 
+            Jumbo,
+            SearchComponent,
         },
         data() {
             return {
@@ -16,6 +19,7 @@
 
 <template>
     <Jumbo /> 
+    <SearchComponent />
     <ApartmentList /> 
 </template>
 

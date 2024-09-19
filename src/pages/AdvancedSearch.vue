@@ -6,9 +6,9 @@ export default {
         return {
             apartments: [],             // Lista di appartamenti
             searchLocation: '',         // Località di ricerca inserita dall'utente
-            searchRadius: '',           // Raggio di ricerca in km
-            rooms: '',                  // Numero di stanze
-            beds: '',                   // Numero di letti
+            searchRadius: '20',         // Raggio di ricerca predefinito in km
+            rooms: '0',                 // Numero di stanze predefinito
+            beds: '0',                  // Numero di letti predefinito
             selectedExtraServices: [],  // IDs dei servizi extra selezionati
             allExtraServices: [],       // Tutti i servizi extra disponibili
             suggestions: [],            // Suggerimenti di città
@@ -19,22 +19,30 @@ export default {
     },
     methods: {
         getApartments() {
+            // Controllo dei valori vuoti e impostazione dei valori predefiniti
+            const location = this.searchLocation || 'Milano'; // Località predefinita
+            const radius = this.searchRadius || '500';         // Raggio predefinito (20 km)
+            const roomsNum = this.rooms || '1';               // Numero predefinito di stanze (1)
+            const bedsNum = this.beds || '1';                 // Numero predefinito di letti (1)
+
+            // Prepara i parametri di ricerca, rispettando i nomi attesi dal backend
+            const params = {
+                location: location,
+                radius: radius,
+                rooms_num: roomsNum,
+                beds_num: bedsNum,
+                'extra_services[]': this.selectedExtraServices  // Questo invierà il parametro come un array
+            };
+
             // Effettua la chiamata al backend con i parametri di ricerca
             axios
-                .get('http://127.0.0.1:8000/api/search', {
-                    params: {
-                        location: this.searchLocation,
-                        radius: this.searchRadius,
-                        rooms: this.rooms,
-                        beds: this.beds,
-                        extra_services: this.selectedExtraServices,
-                    },
-                })
+                .get('http://127.0.0.1:8000/api/search', { params })
                 .then((response) => {
+                    console.log('Risposta API:', response.data); // Log della risposta
                     this.apartments = response.data.results;
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log('Errore durante il fetch degli appartamenti:', error);
                 });
         },
 
@@ -55,6 +63,10 @@ export default {
 
         // Funzione per ottenere i suggerimenti dalla API TomTom
         getCitySuggestions() {
+            console.log('Chiamata API getCitySuggestions:', {
+                location: this.searchLocation
+            });
+
             const apiKey = 'S14VN8AzM8BoQ73JkRu5N2PqtkZtrrjN'; // Inserisci qui la tua chiave API di TomTom
             axios
                 .get(`https://api.tomtom.com/search/2/search/${encodeURIComponent(this.searchLocation)}.json`, {
@@ -78,7 +90,7 @@ export default {
                     }
                 })
                 .catch((error) => {
-                    console.error('Errore nel fetch:', error);
+                    console.error('Errore nel fetch dei suggerimenti:', error);
                 });
         },
 
@@ -105,6 +117,7 @@ export default {
         getAllExtraServices() {
             axios.get('http://127.0.0.1:8000/api/extra-services')
                 .then(response => {
+                    console.log('Servizi extra caricati:', response.data.results); // Log della risposta
                     this.allExtraServices = response.data.results;
                 })
                 .catch(error => {

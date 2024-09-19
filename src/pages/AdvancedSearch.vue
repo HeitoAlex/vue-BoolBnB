@@ -119,110 +119,396 @@ export default {
     },
 }
 </script>
+
+
+
 <template>
-    <div class="search-box">
-        <label for="searchLocation">In quale città?</label>
-        <input
-            type="text"
-            v-model="searchLocation"
-            placeholder="Inserisci una località"
-            @input="debounceSearchLocation"
-            @blur="hideSuggestions"
-            id="searchLocation"
-        />
-
-        <!-- Suggerimenti di città -->
-        <ul v-if="showSuggestions">
-            <li v-for="suggestion in suggestions" :key="suggestion" @click="selectSuggestion(suggestion)">
-                {{ suggestion }}
-            </li>
-        </ul>
-
-        <label for="rooms">Quante stanze?</label>
-        <input
-            type="number"
-            v-model.number="rooms"
-            name="rooms"
-            id="rooms"
-            @input="debounceSearchLocation"
-        />
-
-        <label for="beds">Quanti letti?</label>
-        <input
-            type="number"
-            v-model.number="beds"
-            name="beds"
-            id="beds"
-            @input="debounceSearchLocation"
-        />
-
-        <label for="km">A che distanza dal centro?</label>
-        <input
-            type="number"
-            v-model.number="searchRadius"
-            placeholder="Raggio in km"
-            @input="debounceSearchLocation"
-            id="km"
-        />
-
-        <label for="services">Che servizi cerchi?</label>
-        <div v-for="extra_service in allExtraServices" :key="extra_service.id">
-            <input
-                type="checkbox"
-                :value="extra_service.id"
-                v-model="selectedExtraServices"
-                @change="debounceSearchLocation"
-            />
-            {{ extra_service.name }}
+    <div class="advanced-search-container">
+      <div class="content-wrapper">
+        <!-- Barra di ricerca a sinistra -->
+        <div class="search-box">
+          <h2 class="search-title">Trova il tuo appartamento ideale</h2>
+          <div class="search-fields">
+            <div class="search-field">
+              <label for="searchLocation">In quale città?</label>
+              <div class="input-wrapper">
+                <input
+                  type="text"
+                  v-model="searchLocation"
+                  placeholder="Inserisci una località"
+                  @input="debounceSearchLocation"
+                  @focus="showSuggestions = true"
+                  id="searchLocation"
+                />
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <!-- Suggerimenti di città -->
+              <ul v-if="showSuggestions && suggestions.length" class="suggestions-list">
+                <li
+                  v-for="suggestion in suggestions"
+                  :key="suggestion"
+                  @click="selectSuggestion(suggestion)"
+                >
+                  {{ suggestion }}
+                </li>
+              </ul>
+            </div>
+  
+            <div class="search-field">
+              <label for="rooms">Quante stanze?</label>
+              <div class="input-wrapper">
+                <input
+                  type="number"
+                  v-model.number="rooms"
+                  name="rooms"
+                  id="rooms"
+                  @input="debounceSearchLocation"
+                  min="0"
+                />
+                <i class="fas fa-door-open"></i>
+              </div>
+            </div>
+  
+            <div class="search-field">
+              <label for="beds">Quanti letti?</label>
+              <div class="input-wrapper">
+                <input
+                  type="number"
+                  v-model.number="beds"
+                  name="beds"
+                  id="beds"
+                  @input="debounceSearchLocation"
+                  min="0"
+                />
+                <i class="fas fa-bed"></i>
+              </div>
+            </div>
+  
+            <div class="search-field">
+              <label for="km">A che distanza dal centro?</label>
+              <div class="input-wrapper">
+                <input
+                  type="number"
+                  v-model.number="searchRadius"
+                  placeholder="Raggio in km"
+                  @input="debounceSearchLocation"
+                  id="km"
+                  min="0"
+                />
+                <i class="fas fa-location-arrow"></i>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Servizi extra -->
+          <div class="extra-services">
+            <label>Che servizi cerchi?</label>
+            <div class="services-list">
+              <div
+                class="service-item"
+                v-for="extra_service in allExtraServices"
+                :key="extra_service.id"
+              >
+                <input
+                  type="checkbox"
+                  :value="extra_service.id"
+                  v-model="selectedExtraServices"
+                  @change="debounceSearchLocation"
+                  :id="'service-' + extra_service.id"
+                />
+                <label :for="'service-' + extra_service.id">{{ extra_service.name }}</label>
+              </div>
+            </div>
+          </div>
+  
+          <button class="search-button" @click="getApartments">Cerca</button>
         </div>
-    </div>
-
-    <!-- Lista degli appartamenti -->
-    <div class="apartments-list">
-        <div v-for="apartment in apartments" :key="apartment.id" class="apartment-item">
-            <h2>{{ apartment.title }}</h2>
-            <img :src="getFullImageUrl(apartment.images)" alt="Immagine Appartamento" />
-            <p>{{ apartment.address }}</p>
-            <p>Stanze: {{ apartment.rooms_num }}, Letti: {{ apartment.beds_num }}, Bagni: {{ apartment.bathroom_num }}</p>
-            <!-- Mostra i servizi extra dell'appartamento -->
-            <p>Servizi Extra:
-                <span v-for="(service, index) in apartment.extra_services" :key="service.id">
-                    {{ service.name }}<span v-if="index < apartment.extra_services.length - 1">, </span>
-                </span>
-            </p>
+  
+        <!-- Lista degli appartamenti a destra -->
+        <div class="apartments-grid">
+          <div
+            v-for="(apartment, index) in apartments"
+            :key="apartment.id"
+            class="apartment-card"
+            :style="{ animationDelay: (index * 0.1) + 's' }"
+          >
+            <div class="card-image">
+              <img :src="getFullImageUrl(apartment.images)" alt="Immagine Appartamento" />
+            </div>
+            <div class="card-content">
+              <h3>{{ apartment.title }}</h3>
+              <p class="address"><i class="fas fa-map-marker-alt"></i> {{ apartment.address }}</p>
+              <div class="details">
+                <p><i class="fas fa-door-open"></i> Stanze: {{ apartment.rooms_num }}</p>
+                <p><i class="fas fa-bed"></i> Letti: {{ apartment.beds_num }}</p>
+                <p><i class="fas fa-bath"></i> Bagni: {{ apartment.bathroom_num }}</p>
+              </div>
+              <!-- Servizi extra dell'appartamento -->
+              <div class="extra-services-list">
+                <p>Servizi Extra:</p>
+                <ul>
+                  <li v-for="(service, index) in apartment.extra_services" :key="service.id">
+                    {{ service.name }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</template>
-<style scoped>
-.search-box {
+  </template>
+  
+  <style scoped>
+  /* Variabili di colore */
+  :root {
+    --light-pink: #f5c1d1;
+    --dark-pink: #f29aac;
+    --midnight-blue: #002b5e;
+    --dark-midnight-blue: #001c40;
+    --smoke-gray: #f0f0f0;
+    --text-gray: #555;
+  }
+  
+  /* Contenitore principale */
+  .advanced-search-container {
+    padding: 20px;
+  }
+  
+  /* per la ricerca degli appartamenti */
+  .content-wrapper {
+    display: flex;
+  }
+  
+  /* Barra di ricerca a sinistra */
+  .search-box {
+    width: 300px;
+    background-color: var(--smoke-gray);
+    padding: 20px;
+    border-radius: 8px;
+    margin-right: 20px;
+    animation: fadeInLeft 0.5s ease forwards;
+  }
+  
+  .search-title {
+    text-align: center;
+    color: var(--midnight-blue);
+    margin-bottom: 20px;
+  }
+  
+  .search-fields {
     display: flex;
     flex-direction: column;
-    margin: 2rem 1.5rem;
-    padding: 1rem;
-    background-color: rgb(197, 197, 249);
-    max-width: 300px;
-}
-
-.apartments-list {
-    margin: 2rem 1.5rem;
-}
-
-.apartment-item {
-    margin-bottom: 2rem;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-ul li {
+    gap: 15px;
+  }
+  
+  .search-field {
+    position: relative;
+  }
+  
+  .input-wrapper {
+    position: relative;
+  }
+  
+  .input-wrapper input {
+    width: 100%;
+    padding: 10px 40px 10px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+  }
+  
+  .input-wrapper i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--midnight-blue);
+  }
+  
+  .extra-services {
+    margin-top: 20px;
+  }
+  
+  .extra-services label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: var(--midnight-blue);
+  }
+  
+  .services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .service-item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .service-item input {
+    margin-right: 5px;
+  }
+  
+  .search-button {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background-color: var(--midnight-blue);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
-    background-color: white;
-    padding: 5px;
-}
-
-ul li:hover {
-    background-color: lightgray;
-}
-</style>
+    transition: background-color 0.3s ease;
+  }
+  
+  .search-button:hover {
+    background-color: var(--dark-midnight-blue);
+  }
+  
+  /* Lista dei suggerimenti */
+  .suggestions-list {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    right: 0;
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    z-index: 1000;
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 0 0;
+  }
+  
+  .suggestions-list li {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .suggestions-list li:hover {
+    background-color: var(--light-pink);
+  }
+  
+  /* Griglia degli appartamenti a destra */
+  .apartments-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    animation: fadeInRight 0.5s ease forwards;
+  }
+  
+  /* Card degli appartamenti */
+  .apartment-card {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    animation: fadeInUp 0.5s ease forwards;
+  }
+  
+  .apartment-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card-image img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  
+  .apartment-card:hover .card-image img {
+    transform: scale(1.05);
+  }
+  
+  .card-content {
+    padding: 20px;
+  }
+  
+  .card-content h3 {
+    color: var(--midnight-blue);
+    margin-bottom: 10px;
+  }
+  
+  .card-content .address {
+    color: var(--text-gray);
+    margin-bottom: 15px;
+  }
+  
+  .card-content .details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  
+  .card-content .details p {
+    color: var(--text-gray);
+    margin: 0;
+  }
+  
+  .extra-services-list p {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .extra-services-list ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  
+  .extra-services-list li {
+    background-color: var(--light-pink);
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: var(--midnight-blue);
+    font-size: 12px;
+  }
+  
+  /* Animazioni */
+  @keyframes fadeInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  </style>
+  

@@ -108,88 +108,198 @@ export default {
 
 
 
+
 <template>
   <div class="container">
     <!-- Barra di ricerca -->
     <div class="search-bar">
-      <input
-        type="text"
-        v-model="searchLocation"
-        placeholder="Inserisci una località"
-        @input="debounceSearchLocation" 
-        @blur="hideSuggestions"          
-      />
-      <input
-        type="number"
-        v-model="searchRadius"
-        placeholder="Raggio in km"
-        @input="debounceSearchLocation" 
-      />
-
-      <!-- Lista dei suggerimenti -->
-      <ul v-if="showSuggestions && suggestions.length" class="suggestions-list">
-        <li
-          v-for="(suggestion, index) in suggestions"
-          :key="index"
-          @click="selectSuggestion(suggestion)"
-        >
-          {{ suggestion }}
-        </li>
-      </ul>
-      <div>
-        <a href="/AdvancedSearch">Cerca</a>
+      <div class="search-input">
+        <input
+          type="text"
+          v-model="searchLocation"
+          placeholder="Inserisci una località"
+          @input="debounceSearchLocation" 
+          @focus="showSuggestions = true"       
+        />
+        <i class="fas fa-map-marker-alt"></i>
       </div>
+      <div class="search-input">
+        <input
+          type="number"
+          v-model="searchRadius"
+          placeholder="Raggio in km"
+          @input="debounceSearchLocation" 
+        />
+        <i class="fas fa-search-location"></i>
+      </div>
+      <a href="/AdvancedSearch" class="search-button">Cerca</a>
     </div>
 
+    <!-- Lista dei suggerimenti -->
+    <ul v-if="showSuggestions && suggestions.length" class="suggestions-list">
+      <li
+        v-for="(suggestion, index) in suggestions"
+        :key="index"
+        @click="selectSuggestion(suggestion)"
+      >
+        {{ suggestion }}
+      </li>
+    </ul>
+
     <!-- Lista degli appartamenti filtrati -->
-    <div class="row">
-      <div class="col-md-4" v-for="apartment in apartments" :key="apartment.id">
-        <div class="card mb-4">
-          <div class="card-body">
-            <h5 class="card-title">{{ apartment.title }}</h5>
-            <p class="card-text">Indirizzo: {{ apartment.address }}</p>
-            <p class="card-text">Stanze: {{ apartment.rooms_num }}</p>
-            <p class="card-text">Letti: {{ apartment.beds_num }}</p>
-            <p class="card-text">Bagni: {{ apartment.bathroom_num }}</p>
-            <p class="card-text">Superficie: {{ apartment.sq_mt }} mq</p>
+    <div class="apartments-grid">
+      <div
+        class="apartment-card"
+        v-for="(apartment, index) in apartments"
+        :key="apartment.id"
+        :style="{ animationDelay: (index * 0.1) + 's' }"
+      >
+        <div class="card-image">
+          <img :src="getFullImageUrl(apartment.image)" alt="Apartment image">
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{ apartment.title }}</h5>
+          <p class="card-text">Indirizzo: {{ apartment.address }}</p>
+          <p class="card-text">Stanze: {{ apartment.rooms_num }}</p>
+          <p class="card-text">Letti: {{ apartment.beds_num }}</p>
+          <p class="card-text">Bagni: {{ apartment.bathroom_num }}</p>
+          <p class="card-text">Superficie: {{ apartment.sq_mt }} mq</p>
 
-            <!-- Se è sponsorizzato, mostra il nome dello sponsor -->
-            <p v-if="apartment.sponsors && apartment.sponsors.length > 0" class="text-warning">
-              SPONSORED
-            </p>
-
-            <!-- Pulsante per leggere di più -->
-            <router-link 
-              :to="{ name: 'apartment', params: { id: apartment.id } }" 
-              class="btn btn-primary">
-              Leggi di più
-            </router-link>
-          </div>
+          <!-- Pulsante per leggere di più -->
+          <router-link 
+            :to="{ name: 'apartment', params: { id: apartment.id } }" 
+            class="btn-primary">
+            Leggi di più
+          </router-link>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-
 <style>
+:root {
+  --light-pink: #f5c1d1;
+  --dark-pink: #f29aac;
+  --midnight-blue: #002b5e;
+  --dark-midnight-blue: #001c40;
+  --smoke-gray: #f0f0f0;
+  --text-gray: #555;
+}
+
 .container {
-  width: 1000px;
-  margin: 0 auto; /* Centra il contenuto */
+  padding: 20px;
 }
 
-.row {
+/* Barra di ricerca */
+.search-bar {
   display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
   flex-wrap: wrap;
-  gap: 20px; /* Spazio tra le card */
-  margin-top: 3rem; /* Aggiunge margine sopra le card */
+  gap: 10px;
 }
 
-.card {
-  width: 100%;
-  background-color: white;
+.search-input {
+  position: relative;
+}
+
+.search-input input {
+  padding: 10px 40px 10px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: var(--smoke-gray);
+  color: #333;
+}
+
+.search-input i {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--midnight-blue);
+}
+
+.search-button {
+  padding: 12px 20px;
+  background-color: var(--midnight-blue);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: var(--dark-midnight-blue);
+}
+
+/* Lista dei suggerimenti */
+.suggestions-list {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  right: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  z-index: 1000;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.suggestions-list li {
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.suggestions-list li:hover {
+  background-color: var(--light-pink);
+}
+
+/* Grid degli appartamenti */
+.apartments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+/* Card degli appartamenti */
+.apartment-card {
+  background-color: var(--smoke-gray);
   border-radius: 8px;
+  overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.apartment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card-image {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.apartment-card:hover .card-image img {
+  transform: scale(1.1);
 }
 
 .card-body {
@@ -197,32 +307,41 @@ export default {
 }
 
 .card-title {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
+  color: var(--midnight-blue);
+  margin-bottom: 10px;
 }
 
 .card-text {
-  margin-bottom: 0.75rem;
-}
-
-.text-warning {
-  color: #f39c12;
-  font-weight: bold;
+  color: var(--text-gray);
+  margin-bottom: 5px;
 }
 
 .btn-primary {
-  background-color: #007bff;
-  color: white;
+  display: block;
+  text-align: center;
+  margin-top: 15px;
+  padding: 10px;
+  background-color: var(--light-pink);
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  text-decoration: none;
-  display: inline-block;
-  cursor: pointer;
+  color: var(--midnight-blue);
+  border-radius: 4px;
   transition: background-color 0.3s ease;
+  text-decoration: none;
 }
 
 .btn-primary:hover {
-  background-color: #0056b3;
+  background-color: var(--dark-pink);
+}
+
+/* Animazioni */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

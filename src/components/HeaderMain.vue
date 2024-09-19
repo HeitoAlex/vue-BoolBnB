@@ -3,7 +3,9 @@
     <div class="container">
       <!-- Logo -->
       <div class="logo">
-        <img src="../assets/img/Logo_BoolBnB_.png" alt="Logo">
+        <router-link to="/">
+          <img src="../assets/img/Logo_BoolBnB_.png" alt="Logo">
+        </router-link>
       </div>
       <!-- Pulsante Accedi -->
       <a href="http://localhost:8000/login" class="btn-primary">Accedi</a>
@@ -44,8 +46,8 @@ export default {
   z-index: 1000;
 
   @media (max-width: 992px) {
-      height: 6rem;
-    }
+    height: 6rem;
+  }
 
   &.scrolled {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -82,6 +84,7 @@ export default {
     border: 2px solid transparent;
     border-radius: 1rem;
     transition: background-color 0.3s, border-color 0.3s;
+    margin-top: 0;
 
     &:hover {
       border-color: #a34a62;

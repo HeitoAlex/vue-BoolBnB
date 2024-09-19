@@ -6,23 +6,31 @@ export default {
   data() {
     return {
       filters: {
-        location: '',
-        radius: 20,
-        rooms_num: '',
-        beds_num: '',
-        services: [],
-      },
+      location: '',
+      radius: 20,
+      rooms: '',
+      beds: '',
+      extra_services: [],
+    },
+
       apartments: [],
       services: [],
       errorMessage: '',
     };
   },
   methods: {
+
+    searchApartments() {
+    // Emette l'evento 'search' con i filtri
+    this.$emit('search', { ...this.filters });
+  },
+  
     async searchApartments() {
       try {
-        const response = await axios.get('/search', {
-          params: this.filters,
+        const response = await axios.get('http://127.0.0.1:8000/api/search', {
+        params: this.filters,
         });
+
         this.apartments = response.data.results;
         this.errorMessage = '';
       } catch (error) {
@@ -59,17 +67,17 @@ export default {
       </div>
       <div class="form-group">
         <label for="rooms_num">Numero minimo di stanze:</label>
-        <input type="number" v-model="filters.rooms_num" id="rooms_num" min="1" class="form-input">
+        <input type="number" v-model="filters.rooms" id="rooms" min="1" class="form-input">
       </div>
       <div class="form-group">
         <label for="beds_num">Numero minimo di posti letto:</label>
-        <input type="number" v-model="filters.beds_num" id="beds_num" min="1" class="form-input">
+        <input type="number" v-model="filters.beds" id="beds" min="1" class="form-input">
       </div>
       <div class="form-group">
         <label>Servizi aggiuntivi:</label>
         <div class="services-list">
           <div v-for="service in services" :key="service.id" class="service-item">
-            <input type="checkbox" :value="service.id" v-model="filters.services">
+            <input type="checkbox" :value="service.id" v-model="filters.extra_services">
             <label>{{ service.name }}</label>
           </div>
         </div>

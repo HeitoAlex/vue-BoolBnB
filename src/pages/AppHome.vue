@@ -1,7 +1,6 @@
 <script>
-    // import SearchComponent from '@/components/SearchComponent.vue';
     import SearchComponent from '@/components/SearchComponent.vue';
-import ApartmentList from '../components/ApartmentList.vue';
+    import ApartmentList from '../components/ApartmentList.vue';
     import Jumbo from '../components/Jumbo.vue';
 
     export default {
@@ -10,18 +9,26 @@ import ApartmentList from '../components/ApartmentList.vue';
             Jumbo,
             SearchComponent,
         },
-        data() {
-            return {
-            };
-        }
-    }
+    data() {
+        return {
+        filters: {},
+        };
+    },
+    methods: {
+        updateFilters(newFilters) {
+        this.filters = { ...newFilters };
+        },
+    },
+};
 </script>
 
 <template>
     <Jumbo /> 
-    <SearchComponent />
-    <ApartmentList /> 
+    <SearchComponent @search="updateFilters" />
+    <ApartmentList :filters="filters" /> 
 </template>
 
 <style scoped>
+
+
 </style>

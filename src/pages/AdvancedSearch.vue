@@ -275,7 +275,7 @@ export default {
     padding: 20px;
   }
   
-  /* Wrapper per la barra di ricerca e gli appartamenti */
+  /* per la ricerca degli appartamenti */
   .content-wrapper {
     display: flex;
   }

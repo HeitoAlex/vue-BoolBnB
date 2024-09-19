@@ -1,83 +1,48 @@
 <script>
 import axios from 'axios';
-import AnimaliIcon from '../assets/icon/AnimaliIcon.png';
-import AriaCondizionataIcon from '../assets/icon/AriaCondizionataIcon.png';
-import LavatriceIcon from '../assets/icon/LavatriceIcon.png';
-import PalestraIcon from '../assets/icon/PalestraIcon.png';
-import ParcheggioIcon from '../assets/icon/ParcheggioIcon.png';
-import PiscinaIcon from '../assets/icon/PiscinaIcon.png';
-import WifiIcon from '../assets/icon/Wi-FiIcon.png';
-
 
 export default {
     data() {
         return {
             apartments: [],             // Lista di appartamenti
             searchLocation: '',         // Località di ricerca inserita dall'utente
-            searchRadius: '',           // Raggio di ricerca in km
-            rooms: '',                  // Numero di stanze
-            beds: '',                   // Numero di letti
+            searchRadius: '20',         // Raggio di ricerca predefinito in km
+            rooms: '1',                 // Numero di stanze predefinito
+            beds: '1',                  // Numero di letti predefinito
             selectedExtraServices: [],  // IDs dei servizi extra selezionati
             allExtraServices: [],       // Tutti i servizi extra disponibili
             suggestions: [],            // Suggerimenti di città
             showSuggestions: false,     // Controlla se mostrare i suggerimenti
             debounceTimeout: null,      // Timeout per debounce
-            baseUrl: 'http://localhost:8000/storage/', // URL base per il percorso delle immagini
-            icons: {
-                'Animali': AnimaliIcon,
-                'Aria Condizionata': AriaCondizionataIcon,
-                'Lavatrice': LavatriceIcon,
-                'Palestra': PalestraIcon,
-                'Parcheggio': ParcheggioIcon,
-                'Piscina': PiscinaIcon,
-                'Wi-Fi': WifiIcon
-            }
+            baseUrl: 'http://localhost:8000/storage/' // URL base per il percorso delle immagini
         };
     },
     methods: {
-
-    /* Parte per prendere le icone negli extra services ---------------- */
-    // getServiceIcon(serviceName) {
-    //     switch (serviceName) {
-    //       case 'Animali':
-    //         return require('../assets/icon/AnimaliIcon.png');
-    //       case 'Aria Condizionata':
-    //         return require('../assets/icons/AriaCondizionataIcon.png');
-    //       case 'Lavatrice':
-    //         return require('../assets/icons/LavatriceIcon.png');
-    //       case 'Palestra':
-    //         return require('../assets/icons/PalestraIcon.png');
-    //       case 'Parcheggio':
-    //         return require('../assets/icons/ParcheggioIcon.png');
-    //       case 'Piscina':
-    //         return require('../assets/icons/PiscinaIcon.png');
-    //       case 'Wi-Fi':
-    //         return require('../assets/icons/Wi-FiIcon.png');
-    //       default:
-    //         return '';
-    // }
-    // },
-    /* Parte per prendere le icone negli extra services ---------------- */
-
-
-
         getApartments() {
+            // Controllo dei valori vuoti e impostazione dei valori predefiniti
+            const location = this.searchLocation || ''; // Località predefinita
+            const radius = this.searchRadius || '500';         // Raggio predefinito (20 km)
+            const roomsNum = this.rooms || '1';               // Numero predefinito di stanze (1)
+            const bedsNum = this.beds || '1';                 // Numero predefinito di letti (1)
+
+            // Prepara i parametri di ricerca, rispettando i nomi attesi dal backend
+            const params = {
+                location: location,
+                radius: radius,
+                rooms_num: roomsNum,
+                beds_num: bedsNum,
+                'extra_services[]': this.selectedExtraServices  // Questo invierà il parametro come un array
+            };
+
             // Effettua la chiamata al backend con i parametri di ricerca
             axios
-                .get('http://127.0.0.1:8000/api/search', {
-                    params: {
-                        location: this.searchLocation,
-                        radius: this.searchRadius,
-                        rooms: this.rooms,
-                        beds: this.beds,
-                        extra_services: this.selectedExtraServices,
-                    },
-                })
+                .get('http://127.0.0.1:8000/api/search', { params })
                 .then((response) => {
+                    console.log('Risposta API:', response.data); // Log della risposta
                     this.apartments = response.data.results;
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log('Errore durante il fetch degli appartamenti:', error);
                 });
         },
 
@@ -98,6 +63,10 @@ export default {
 
         // Funzione per ottenere i suggerimenti dalla API TomTom
         getCitySuggestions() {
+            console.log('Chiamata API getCitySuggestions:', {
+                location: this.searchLocation
+            });
+
             const apiKey = 'S14VN8AzM8BoQ73JkRu5N2PqtkZtrrjN'; // Inserisci qui la tua chiave API di TomTom
             axios
                 .get(`https://api.tomtom.com/search/2/search/${encodeURIComponent(this.searchLocation)}.json`, {
@@ -121,7 +90,7 @@ export default {
                     }
                 })
                 .catch((error) => {
-                    console.error('Errore nel fetch:', error);
+                    console.error('Errore nel fetch dei suggerimenti:', error);
                 });
         },
 
@@ -148,6 +117,7 @@ export default {
         getAllExtraServices() {
             axios.get('http://127.0.0.1:8000/api/extra-services')
                 .then(response => {
+                    console.log('Servizi extra caricati:', response.data.results); // Log della risposta
                     this.allExtraServices = response.data.results;
                 })
                 .catch(error => {
@@ -155,12 +125,6 @@ export default {
                 });
         },
     },
-
-
-    getServiceIcon(serviceName) {
-            return this.icons[serviceName] || ''; // Restituisce l'icona corrispondente o una stringa vuota
-        },
-
     created() {
         // Ottiene i servizi extra e gli appartamenti quando il componente è montato
         this.getAllExtraServices();
@@ -168,6 +132,8 @@ export default {
     },
 }
 </script>
+message.txt
+7 KB
 
 
 
@@ -180,6 +146,7 @@ export default {
         <div class="search-fields">
           <div class="search-field">
             <label for="searchLocation">In quale città?</label>
+            <!-- <SearchComponent @search="updateFilters" /> -->
             <div class="input-wrapper">
               <input
                 type="text"
@@ -316,6 +283,12 @@ export default {
                 </li>
               </ul>
             </div>
+
+            <router-link 
+            :to="{ name: 'apartment', params: { id: apartment.id } }" 
+            class="btn-primary">
+            Leggi di più
+          </router-link>
           </div>
         </div>
       </div>

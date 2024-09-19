@@ -44,97 +44,178 @@ export default {
 </script>
 
 <template>
-    <div class="card me-3 mb-2 content-wrapper">
-        <img :src="fullImageUrl" class="card-img-top" alt="immagine appartamento">
-        <div class="card-body">
-            <div class="card-header">{{ title }}</div>
-            <div class="details">
-                <p class="card-text"><strong>Stanze:</strong> {{ rooms_num }}</p>
-                <p class="card-text"><strong>Letti:</strong> {{ beds_num }}</p>
-                <p class="card-text"><strong>Bagni:</strong> {{ bathroom_num }}</p>
-                <p class="card-text"><strong>Metri quadri:</strong> {{ sq_mt }} m²</p>
-                <p class="card-text"><strong>Indirizzo:</strong> {{ address }}</p>
+    <div class="apartment-card">
+        <div class="image-section">
+            <img :src="fullImageUrl" alt="Immagine appartamento" class="apartment-image">
+        </div>
+        <div class="info-section">
+            <h2 class="apartment-title">{{ title }}</h2>
+            <div class="apartment-details">
+                <div class="detail-item">
+                    <i class="fas fa-door-open"></i>
+                    <span>{{ rooms_num }} Stanze</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-bed"></i>
+                    <span>{{ beds_num }} Letti</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-bath"></i>
+                    <span>{{ bathroom_num }} Bagni</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-ruler-combined"></i>
+                    <span>{{ sq_mt }} m²</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ address }}</span>
+                </div>
+                
             </div>
-            <!-- Usa router-link per passare l'id dell'appartamento -->
-            <router-link :to="{ name: 'formInfo', params: { id: id } }" class="info-button">Info</router-link>
+            <router-link :to="{ name: 'formInfo', params: { id: id } }" class="contact-button">
+                Contatta il Proprietario
+            </router-link>
         </div>
     </div>
 </template>
 
 <style scoped>
-/* Stile della card */
-.card {
-    border: none; 
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); 
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+/* Stile generale della carta */
+.apartment-card {
+    display: flex;
+    flex-direction: row;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 20px 0;
+}
+
+.apartment-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Sezione immagine */
+.image-section {
+    flex: 1;
+    min-width: 300px;
+    max-width: 400px;
+    overflow: hidden;
+    position: relative;
+}
+
+.apartment-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.image-section:hover .apartment-image {
+    transform: scale(1.1);
+}
+
+/* Sezione informazioni */
+.info-section {
+    flex: 2;
+    padding: 30px;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
 }
 
-.card:hover {
-    transform: translateY(-5px); 
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2); 
-}
-
-.card-img-top {
-    height: 200px;
-    object-fit: cover; 
-}
-
-.card-body {
-    padding: 20px;
+.apartment-title {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     text-align: left;
 }
 
-.card-header {
-    background-color: #003f6c;
-    color: white; 
-    font-weight: bold;
-    text-align: center;
-    padding: 15px;
-    border-bottom: none; 
-    font-size: 1.5rem; 
-    border-radius: 12px 12px 0 0; 
-}
-
-.details {
-    margin: 10px 0;
-}
-
-.card-text {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-    color: #555;
-}
-
-.info-button {
-    display: inline-block;
-    margin-top: 10px; 
-    padding: 10px 20px; 
-    background-color: #007bff; 
-    color: white;
-    border-radius: 5px;
-    text-decoration: none; 
-    text-align: center;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.info-button:hover {
-    background-color: #0056b3; 
-    transform: translateY(-2px); 
-}
-
-.project-list {
+.apartment-details {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; 
-    margin-top: 20px;
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
-.card {
-    flex: 1 1 calc(33.333% - 20px); 
-    min-width: 300px; 
+.detail-item {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    color: #555555;
+}
+
+.detail-item i {
+    color: #007bff;
+    margin-right: 8px;
+    font-size: 1.2rem;
+}
+
+.contact-button {
+    align-self: flex-start;
+    padding: 12px 28px;
+    background-color: #ff5722;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.contact-button:hover {
+    background-color: #e64a19;
+    transform: translateY(-3px);
+}
+
+/* Icona pulsante */
+.contact-button i {
+    font-size: 1.1rem;
+}
+
+/* Responsività */
+@media (max-width: 1024px) {
+    .apartment-card {
+        flex-direction: column;
+    }
+    
+    .image-section {
+        max-width: 100%;
+        height: 250px;
+    }
+    
+    .apartment-image {
+        height: 100%;
+    }
+    
+    .info-section {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .apartment-title {
+        font-size: 1.5rem;
+    }
+    
+    .detail-item {
+        width: 50%;
+    }
+    
+    .contact-button {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
 }
 </style>

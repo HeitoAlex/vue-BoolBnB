@@ -155,7 +155,7 @@ export default {
         :style="{ animationDelay: (index * 0.1) + 's' }"
       >
         <div class="card-image">
-          <img :src="getFullImageUrl(apartment.image)" alt="Apartment image">
+          <img :src="getFullImageUrl(apartment.images)" alt="Apartment image">
         </div>
         <div class="card-body">
           <h5 class="card-title">{{ apartment.title }}</h5>

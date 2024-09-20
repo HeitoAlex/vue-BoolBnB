@@ -17,6 +17,7 @@ export default {
       baseUrl: 'http://localhost:8000/storage/' // URL base per il percorso delle immagini
     };
   },
+  
   methods: {
     // Effettua la chiamata al backend con i parametri di ricerca
     getApartments() {
@@ -111,30 +112,6 @@ export default {
 
 <template>
   <div class="container">
-    <!-- Barra di ricerca -->
-    <div class="search-bar">
-      <div class="search-input">
-        <input
-          type="text"
-          v-model="searchLocation"
-          placeholder="Inserisci una località"
-          @input="debounceSearchLocation" 
-          @focus="showSuggestions = true"       
-        />
-        <i class="fas fa-map-marker-alt"></i>
-      </div>
-      <div class="search-input">
-        <input
-          type="number"
-          v-model="searchRadius"
-          placeholder="Raggio in km"
-          @input="debounceSearchLocation" 
-        />
-        <i class="fas fa-search-location"></i>
-      </div>
-      <a href="/AdvancedSearch" class="search-button">Cerca</a>
-    </div>
-
     <!-- Lista dei suggerimenti -->
     <ul v-if="showSuggestions && suggestions.length" class="suggestions-list">
       <li
@@ -147,7 +124,7 @@ export default {
     </ul>
 
     <!-- Lista degli appartamenti filtrati -->
-    <div class="apartments-grid">
+    <transition-group name="fade" tag="div" class="apartments-grid">
       <div
         class="apartment-card"
         v-for="(apartment, index) in apartments"
@@ -156,29 +133,40 @@ export default {
       >
         <div class="card-image">
           <img :src="getFullImageUrl(apartment.images)" alt="Apartment image">
+          <span v-if="apartment.sponsors && apartment.sponsors.length > 0" class="sponsored-label">
+            <i class="fas fa-star"></i> SPONSORED
+          </span>
         </div>
         <div class="card-body">
           <h5 class="card-title">{{ apartment.title }}</h5>
-          <p v-if="apartment.sponsors && apartment.sponsors.length > 0" class="text-warning">
-              SPONSORED
-            </p>
-          <p class="card-text">Indirizzo: {{ apartment.address }}</p>
-          <p class="card-text">Stanze: {{ apartment.rooms_num }}</p>
-          <p class="card-text">Letti: {{ apartment.beds_num }}</p>
-          <p class="card-text">Bagni: {{ apartment.bathroom_num }}</p>
-          <p class="card-text">Superficie: {{ apartment.sq_mt }} mq</p>
+          <p class="card-text">
+            <i class="fas fa-map-marker-alt"></i> {{ apartment.address }}
+          </p>
+          <p class="card-text">
+            <i class="fas fa-door-open"></i> Stanze: {{ apartment.rooms_num }}
+          </p>
+          <p class="card-text">
+            <i class="fas fa-bed"></i> Letti: {{ apartment.beds_num }}
+          </p>
+          <p class="card-text">
+            <i class="fas fa-bath"></i> Bagni: {{ apartment.bathroom_num }}
+          </p>
+          <p class="card-text">
+            <i class="fas fa-ruler-combined"></i> Superficie: {{ apartment.sq_mt }} mq
+          </p>
 
           <!-- Pulsante per leggere di più -->
           <router-link 
             :to="{ name: 'apartment', params: { id: apartment.id } }" 
             class="btn-primary">
-            Leggi di più
+            Leggi di più <i class="fas fa-arrow-right"></i>
           </router-link>
         </div>
       </div>
-    </div>
+    </transition-group>
   </div>
 </template>
+
 
 <style>
 :root {

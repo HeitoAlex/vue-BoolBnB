@@ -117,7 +117,11 @@
                             <i class="fas fa-ruler-combined"></i>
                             <span>{{ apartment.sq_mt }} m²</span>
                         </div>
+
+                       
                     </div>
+
+                    <button class="btn-primary info "><router-link :to="{ name: 'formInfo', params: { id: id } }" class="info-button">Contatta il proprietario</router-link></button>
                 </div>
 
                 <!-- Mockup Carosello Immagini -->
@@ -138,7 +142,7 @@
                     <p class="carousel-note">Carosello mockup: funzionalità non implementata.</p>
 
                     <!-- TASTO PER LE INFO PROVISSORIO -->
-                    <router-link :to="{ name: 'formInfo', params: { id: id } }" class="info-button">Info</router-link>
+                    
                 </div>
             </div>
         </section>
@@ -173,6 +177,7 @@
     height: 60vh;
     width: 100%;
     overflow: hidden;
+    color: white;
 }
 
 .header-image {
@@ -285,6 +290,8 @@
     color: var(--light-pink);
     font-size: 1.5rem;
 }
+
+
 
 /* Carosello Mockup */
 .carousel-container {

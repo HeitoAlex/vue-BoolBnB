@@ -267,6 +267,10 @@ export default {
           </div>
           <div class="card-content">
             <h3>{{ apartment.title }}</h3>
+
+            <p v-if="apartment.sponsors && apartment.sponsors.length > 0" class="text-warning">
+              SPONSORED
+            </p>
             <p class="address"><i class="fas fa-map-marker-alt"></i> {{ apartment.address }}</p>
             <div class="details">
               <p><i class="fas fa-door-open"></i> Stanze: {{ apartment.rooms_num }}</p>

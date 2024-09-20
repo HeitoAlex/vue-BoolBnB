@@ -159,6 +159,9 @@ export default {
         </div>
         <div class="card-body">
           <h5 class="card-title">{{ apartment.title }}</h5>
+          <p v-if="apartment.sponsors && apartment.sponsors.length > 0" class="text-warning">
+              SPONSORED
+            </p>
           <p class="card-text">Indirizzo: {{ apartment.address }}</p>
           <p class="card-text">Stanze: {{ apartment.rooms_num }}</p>
           <p class="card-text">Letti: {{ apartment.beds_num }}</p>

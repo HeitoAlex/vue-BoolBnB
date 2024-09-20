@@ -15,11 +15,12 @@ export default {
             suggestions: [],            // Suggerimenti di città
             showSuggestions: false,     // Controlla se mostrare i suggerimenti
             debounceTimeout: null,      // Timeout per debounce
+            selectedCoordinates: null,  // Coordinate della località selezionata
             baseUrl: 'http://localhost:8000/storage/' // URL base per il percorso delle immagini
         };
     },
     methods: {
-        // Carica tutti gli appartamenti all'inizio e assegna a apartments e filteredApartments
+        // Carica tutti gli appartamenti all'inizio
         loadApartments() {
             axios.get('http://127.0.0.1:8000/api/search')
                 .then((response) => {
@@ -33,28 +34,54 @@ export default {
 
         // Funzione principale di filtraggio lato client
         filterApartments() {
-            // Se non c'è nulla nella barra di ricerca, mostra tutti gli appartamenti
-            if (!this.searchLocation) {
-                this.filteredApartments = this.apartments;
-            } else {
-                // Filtra in base alla località inserita
-                this.filteredApartments = this.apartments.filter(apartment =>
-                    apartment.address.toLowerCase().includes(this.searchLocation.toLowerCase())
-                );
+            let filtered = this.apartments;
+
+            // Filtro località
+            if (this.selectedCoordinates) {
+                filtered = filtered.filter(apartment => {
+                    const distance = this.calculateDistance(
+                        this.selectedCoordinates.lat,
+                        this.selectedCoordinates.lon,
+                        apartment.latitude,   // Supponiamo che l'appartamento abbia latitudine
+                        apartment.longitude   // Supponiamo che l'appartamento abbia longitudine
+                    );
+                    return distance <= this.searchRadius;
+                });
             }
 
-            // Applica ulteriori filtri: numero di stanze, letti e servizi extra selezionati
-            this.filteredApartments = this.filteredApartments.filter(apartment => {
+            // Filtro numero di stanze e letti
+            filtered = filtered.filter(apartment => {
                 const matchesRooms = apartment.rooms_num >= this.rooms;
                 const matchesBeds = apartment.beds_num >= this.beds;
+                return matchesRooms && matchesBeds;
+            });
 
-                // Filtra per servizi extra: controlla se l'appartamento contiene tutti i servizi selezionati
-                const matchesServices = this.selectedExtraServices.every(serviceId =>
+            // Filtro per servizi extra selezionati
+            filtered = filtered.filter(apartment => {
+                return this.selectedExtraServices.every(serviceId =>
                     apartment.extra_services.some(service => service.id === serviceId)
                 );
-
-                return matchesRooms && matchesBeds && matchesServices;
             });
+
+            this.filteredApartments = filtered;
+        },
+
+        // Calcola la distanza usando la formula dell'Haversine
+        calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Raggio medio della Terra in km
+            const dLat = this.degToRad(lat2 - lat1);
+            const dLon = this.degToRad(lon2 - lon1);
+            const a = 
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(this.degToRad(lat1)) * Math.cos(this.degToRad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c; // Distanza in km
+            return distance;
+        },
+
+        degToRad(deg) {
+            return deg * (Math.PI / 180);
         },
 
         // Funzione debounce per ridurre la frequenza di filtraggio
@@ -66,8 +93,14 @@ export default {
             }, 300);
         },
 
-        // Ottieni suggerimenti di città (API TomTom o basata su una lista)
+        // Ottieni suggerimenti di città dall'API TomTom
         getCitySuggestions() {
+            if (this.searchLocation.length < 3) {
+                this.suggestions = [];
+                this.showSuggestions = false;
+                return;
+            }
+
             const apiKey = 'S14VN8AzM8BoQ73JkRu5N2PqtkZtrrjN'; // Chiave API di TomTom
             axios.get(`https://api.tomtom.com/search/2/search/${encodeURIComponent(this.searchLocation)}.json`, {
                 params: {
@@ -82,7 +115,11 @@ export default {
                 if (response.data.results && response.data.results.length > 0) {
                     this.suggestions = response.data.results
                         .filter(item => item.address && item.address.freeformAddress)
-                        .map(item => item.address.freeformAddress);
+                        .map(item => ({
+                            address: item.address.freeformAddress,
+                            lat: item.position.lat,
+                            lon: item.position.lon
+                        }));
                     this.showSuggestions = true;
                 } else {
                     this.suggestions = [];
@@ -94,9 +131,10 @@ export default {
             });
         },
 
-        // Seleziona un suggerimento e applica il filtraggio
+        // Seleziona un suggerimento e aggiorna le coordinate
         selectSuggestion(suggestion) {
-            this.searchLocation = suggestion;
+            this.searchLocation = suggestion.address;
+            this.selectedCoordinates = { lat: suggestion.lat, lon: suggestion.lon };
             this.suggestions = [];
             this.showSuggestions = false;
             this.filterApartments();  // Filtra appartamenti dopo selezione località
@@ -143,7 +181,7 @@ export default {
                 type="text"
                 v-model="searchLocation"
                 placeholder="Inserisci una località"
-                @input="debounceFilter"
+                @input="getCitySuggestions"
                 @focus="showSuggestions = true"
                 id="searchLocation"
               />
@@ -153,14 +191,15 @@ export default {
             <ul v-if="showSuggestions && suggestions.length" class="suggestions-list">
               <li
                 v-for="suggestion in suggestions"
-                :key="suggestion"
+                :key="suggestion.address"
                 @click="selectSuggestion(suggestion)"
               >
-                {{ suggestion }}
+                {{ suggestion.address }}
               </li>
             </ul>
           </div>
 
+          <!-- Altri campi di ricerca (stanze, letti, distanza) -->
           <div class="search-field">
             <label for="rooms">Quante stanze?</label>
             <div class="input-wrapper">
@@ -270,13 +309,14 @@ export default {
             :to="{ name: 'apartment', params: { id: apartment.id } }" 
             class="btn-primary">
             Leggi di più
-          </router-link>
+            </router-link>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 
 <style scoped>
 /* Variabili di colore */

@@ -36,17 +36,27 @@ export default {
         filterApartments() {
             let filtered = this.apartments;
 
-            // Filtro località
+            // Se la barra di ricerca è vuota, mostra tutti gli appartamenti
+            if (!this.searchLocation && !this.selectedCoordinates) {
+                this.filteredApartments = this.apartments;
+                return;
+            }
+
+            // Filtro per località e distanza
             if (this.selectedCoordinates) {
                 filtered = filtered.filter(apartment => {
                     const distance = this.calculateDistance(
                         this.selectedCoordinates.lat,
                         this.selectedCoordinates.lon,
-                        apartment.latitude,   // Supponiamo che l'appartamento abbia latitudine
-                        apartment.longitude   // Supponiamo che l'appartamento abbia longitudine
+                        apartment.latitude, 
+                        apartment.longitude
                     );
                     return distance <= this.searchRadius;
                 });
+            } else if (this.searchLocation) {
+                filtered = filtered.filter(apartment =>
+                    apartment.address.toLowerCase().includes(this.searchLocation.toLowerCase())
+                );
             }
 
             // Filtro numero di stanze e letti
@@ -90,7 +100,7 @@ export default {
 
             this.debounceTimeout = setTimeout(() => {
                 this.filterApartments(); // Esegui il filtraggio
-            }, 300);
+            }, 100); // Ridotto il debounce a 100ms per maggiore reattività
         },
 
         // Ottieni suggerimenti di città dall'API TomTom
@@ -140,6 +150,18 @@ export default {
             this.filterApartments();  // Filtra appartamenti dopo selezione località
         },
 
+        // Se la barra è vuota, mostra tutti gli appartamenti e attiva la ricerca dinamica
+        handleInput() {
+            this.filterApartments();
+            if (this.searchLocation.length < 3) {
+                this.filteredApartments = this.apartments;
+                this.showSuggestions = false;
+                return;
+            } else {
+                this.getCitySuggestions(); // Altrimenti, continua con la ricerca suggerita
+            }
+        },
+
         hideSuggestions() {
             this.showSuggestions = false;
         },
@@ -181,7 +203,7 @@ export default {
                 type="text"
                 v-model="searchLocation"
                 placeholder="Inserisci una località"
-                @input="getCitySuggestions"
+                @input="handleInput"
                 @focus="showSuggestions = true"
                 id="searchLocation"
               />
@@ -316,6 +338,8 @@ export default {
     </div>
   </div>
 </template>
+
+
 
 
 <style scoped>

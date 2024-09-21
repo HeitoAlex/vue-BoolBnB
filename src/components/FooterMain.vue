@@ -22,10 +22,16 @@ export default {
 
   font-size: 0.875rem;       /* Dimensione del font */
   z-index: 1000;             /* Assicura che il footer sia sopra altri elementi se necessario */
+  position: fixed;
+    bottom: 0;
+    width: 100%;
 }
+
 
 .footer p {
   margin: 0;
   font-size: 10px;
 }
+
+
 </style>

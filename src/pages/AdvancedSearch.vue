@@ -305,8 +305,11 @@ export default {
       v-for="(apartment, index) in filteredApartments"
       :key="apartment.id"
       class="apartment-card"
-      :style="{ animationDelay: (index * 0.1) + 's' }"
-    >
+      :style="{ 
+      animationDelay: (index * 0.1) + 's', 
+      maxHeight: '500px' , maxWidth: '500px'
+    }"
+  >
       <div class="card-image">
         <img :src="getFullImageUrl(apartment.images)" alt="Immagine Appartamento" />
         <span v-if="apartment.sponsors && apartment.sponsors.length > 0" class="sponsored-label">
@@ -316,9 +319,7 @@ export default {
       <div class="card-content">
         <h3 class="card-title">{{ apartment.title }}</h3>
 
-        <p v-if="apartment.sponsors && apartment.sponsors.length > 0" class="text-warning">
-          SPONSORIZZATO
-        </p>
+       
         <p class="address"><i class="fas fa-map-marker-alt icon"></i> {{ apartment.address }}</p>
         <div class="details">
           <p><i class="fas fa-door-open icon"></i> Stanze: {{ apartment.rooms_num }}</p>

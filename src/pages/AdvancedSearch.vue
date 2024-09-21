@@ -4,120 +4,177 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            apartments: [],             // Lista di appartamenti
-            searchLocation: '',         // Località di ricerca inserita dall'utente
-            searchRadius: '20',         // Raggio di ricerca predefinito in km
-            rooms: '1',                 // Numero di stanze predefinito
-            beds: '1',                  // Numero di letti predefinito
+            apartments: [],            // Lista completa di appartamenti caricati dal backend
+            filteredApartments: [],     // Lista di appartamenti filtrati
+            searchLocation: '',         // Località inserita dall'utente
+            searchRadius: 20,           // Raggio di ricerca predefinito in km
+            rooms: 1,                   // Numero di stanze
+            beds: 1,                    // Numero di letti
             selectedExtraServices: [],  // IDs dei servizi extra selezionati
             allExtraServices: [],       // Tutti i servizi extra disponibili
             suggestions: [],            // Suggerimenti di città
             showSuggestions: false,     // Controlla se mostrare i suggerimenti
             debounceTimeout: null,      // Timeout per debounce
+            selectedCoordinates: null,  // Coordinate della località selezionata
             baseUrl: 'http://localhost:8000/storage/' // URL base per il percorso delle immagini
         };
     },
     methods: {
-        getApartments() {
-            // Controllo dei valori vuoti e impostazione dei valori predefiniti
-            const location = this.searchLocation || ''; // Località predefinita
-            const radius = this.searchRadius || '500';         // Raggio predefinito (20 km)
-            const roomsNum = this.rooms || '1';               // Numero predefinito di stanze (1)
-            const bedsNum = this.beds || '1';                 // Numero predefinito di letti (1)
-
-            // Prepara i parametri di ricerca, rispettando i nomi attesi dal backend
-            const params = {
-                location: location,
-                radius: radius,
-                rooms_num: roomsNum,
-                beds_num: bedsNum,
-                'extra_services[]': this.selectedExtraServices  // Questo invierà il parametro come un array
-            };
-
-            // Effettua la chiamata al backend con i parametri di ricerca
-            axios
-                .get('http://127.0.0.1:8000/api/search', { params })
+        // Carica tutti gli appartamenti all'inizio
+        loadApartments() {
+            axios.get('http://127.0.0.1:8000/api/search')
                 .then((response) => {
-                    console.log('Risposta API:', response.data); // Log della risposta
                     this.apartments = response.data.results;
+                    this.filteredApartments = this.apartments; // Mostra tutti inizialmente
                 })
                 .catch((error) => {
-                    console.log('Errore durante il fetch degli appartamenti:', error);
+                    console.error('Errore durante il fetch degli appartamenti:', error);
                 });
         },
 
-        // Funzione debounce per limitare la frequenza delle chiamate API
-        debounceSearchLocation() {
-            if (this.debounceTimeout) clearTimeout(this.debounceTimeout); // Cancella il precedente timeout
+        // Funzione principale di filtraggio lato client
+        filterApartments() {
+            let filtered = this.apartments;
 
-            this.debounceTimeout = setTimeout(() => {
-                if (this.searchLocation.length > 2) {
-                    this.getCitySuggestions(); // Ottieni suggerimenti dalle città
-                } else {
-                    this.suggestions = []; // Svuota i suggerimenti se ci sono meno di 3 caratteri
-                    this.showSuggestions = false;
-                }
-                this.getApartments(); // Effettua la ricerca degli appartamenti
-            }, 300); // Ritardo di 300ms
-        },
+            // Se la barra di ricerca è vuota, mostra tutti gli appartamenti
+            if (!this.searchLocation && !this.selectedCoordinates) {
+                this.filteredApartments = this.apartments;
+                return;
+            }
 
-        // Funzione per ottenere i suggerimenti dalla API TomTom
-        getCitySuggestions() {
-            console.log('Chiamata API getCitySuggestions:', {
-                location: this.searchLocation
+            // Filtro per località e distanza
+            if (this.selectedCoordinates) {
+                filtered = filtered.filter(apartment => {
+                    const distance = this.calculateDistance(
+                        this.selectedCoordinates.lat,
+                        this.selectedCoordinates.lon,
+                        apartment.latitude, 
+                        apartment.longitude
+                    );
+                    return distance <= this.searchRadius;
+                });
+            } else if (this.searchLocation) {
+                filtered = filtered.filter(apartment =>
+                    apartment.address.toLowerCase().includes(this.searchLocation.toLowerCase())
+                );
+            }
+
+            // Filtro numero di stanze e letti
+            filtered = filtered.filter(apartment => {
+                const matchesRooms = apartment.rooms_num >= this.rooms;
+                const matchesBeds = apartment.beds_num >= this.beds;
+                return matchesRooms && matchesBeds;
             });
 
-            const apiKey = 'S14VN8AzM8BoQ73JkRu5N2PqtkZtrrjN'; // Inserisci qui la tua chiave API di TomTom
-            axios
-                .get(`https://api.tomtom.com/search/2/search/${encodeURIComponent(this.searchLocation)}.json`, {
-                    params: {
-                        key: apiKey,
-                        language: 'it-IT',
-                        typeahead: true,
-                        limit: 5,
-                        entityType: 'Municipality',
-                    },
-                })
-                .then((response) => {
-                    if (response.data.results && response.data.results.length > 0) {
-                        this.suggestions = response.data.results
-                            .filter(item => item.address && item.address.freeformAddress)
-                            .map(item => item.address.freeformAddress);
-                        this.showSuggestions = true;
-                    } else {
-                        this.suggestions = [];
-                        this.showSuggestions = false;
-                    }
-                })
-                .catch((error) => {
-                    console.error('Errore nel fetch dei suggerimenti:', error);
-                });
+            // Filtro per servizi extra selezionati
+            filtered = filtered.filter(apartment => {
+                return this.selectedExtraServices.every(serviceId =>
+                    apartment.extra_services.some(service => service.id === serviceId)
+                );
+            });
+
+            this.filteredApartments = filtered;
         },
 
-        // Seleziona un suggerimento e lo applica al campo di ricerca
+        // Calcola la distanza usando la formula dell'Haversine
+        calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Raggio medio della Terra in km
+            const dLat = this.degToRad(lat2 - lat1);
+            const dLon = this.degToRad(lon2 - lon1);
+            const a = 
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(this.degToRad(lat1)) * Math.cos(this.degToRad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c; // Distanza in km
+            return distance;
+        },
+
+        degToRad(deg) {
+            return deg * (Math.PI / 180);
+        },
+
+        // Funzione debounce per ridurre la frequenza di filtraggio
+        debounceFilter() {
+            if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+
+            this.debounceTimeout = setTimeout(() => {
+                this.filterApartments(); // Esegui il filtraggio
+            }, 100); // Ridotto il debounce a 100ms per maggiore reattività
+        },
+
+        // Ottieni suggerimenti di città dall'API TomTom
+        getCitySuggestions() {
+            if (this.searchLocation.length < 3) {
+                this.suggestions = [];
+                this.showSuggestions = false;
+                return;
+            }
+
+            const apiKey = 'S14VN8AzM8BoQ73JkRu5N2PqtkZtrrjN'; // Chiave API di TomTom
+            axios.get(`https://api.tomtom.com/search/2/search/${encodeURIComponent(this.searchLocation)}.json`, {
+                params: {
+                    key: apiKey,
+                    language: 'it-IT',
+                    typeahead: true,
+                    limit: 5,
+                    entityType: 'Municipality',
+                },
+            })
+            .then((response) => {
+                if (response.data.results && response.data.results.length > 0) {
+                    this.suggestions = response.data.results
+                        .filter(item => item.address && item.address.freeformAddress)
+                        .map(item => ({
+                            address: item.address.freeformAddress,
+                            lat: item.position.lat,
+                            lon: item.position.lon
+                        }));
+                    this.showSuggestions = true;
+                } else {
+                    this.suggestions = [];
+                    this.showSuggestions = false;
+                }
+            })
+            .catch((error) => {
+                console.error('Errore nel fetch dei suggerimenti:', error);
+            });
+        },
+
+        // Seleziona un suggerimento e aggiorna le coordinate
         selectSuggestion(suggestion) {
-            this.searchLocation = suggestion;
+            this.searchLocation = suggestion.address;
+            this.selectedCoordinates = { lat: suggestion.lat, lon: suggestion.lon };
             this.suggestions = [];
             this.showSuggestions = false;
-            this.getApartments();  // Esegui la ricerca degli appartamenti
+            this.filterApartments();  // Filtra appartamenti dopo selezione località
+        },
+
+        // Se la barra è vuota, mostra tutti gli appartamenti e attiva la ricerca dinamica
+        handleInput() {
+            this.filterApartments();
+            if (this.searchLocation.length < 3) {
+                this.filteredApartments = this.apartments;
+                this.showSuggestions = false;
+                return;
+            } else {
+                this.getCitySuggestions(); // Altrimenti, continua con la ricerca suggerita
+            }
         },
 
         hideSuggestions() {
-            // Funzione per nascondere i suggerimenti quando l'input perde il focus
             this.showSuggestions = false;
         },
 
-        // Funzione per ottenere l'URL completo dell'immagine
+        // Ottieni l'URL completo per l'immagine dell'appartamento
         getFullImageUrl(imagePath) {
-            if (!imagePath) return ''; // Se non c'è immagine, restituisci una stringa vuota
-            return this.baseUrl + imagePath; // Concatena l'URL di base con il percorso dell'immagine
+            return imagePath ? this.baseUrl + imagePath : '';
         },
 
-        // Funzione per ottenere tutti i servizi extra
-        getAllExtraServices() {
+        // Carica tutti i servizi extra
+        loadExtraServices() {
             axios.get('http://127.0.0.1:8000/api/extra-services')
                 .then(response => {
-                    console.log('Servizi extra caricati:', response.data.results); // Log della risposta
                     this.allExtraServices = response.data.results;
                 })
                 .catch(error => {
@@ -126,15 +183,11 @@ export default {
         },
     },
     created() {
-        // Ottiene i servizi extra e gli appartamenti quando il componente è montato
-        this.getAllExtraServices();
-        this.getApartments();
+        this.loadApartments();      // Carica gli appartamenti al caricamento
+        this.loadExtraServices();   // Carica i servizi extra
     },
-}
+};
 </script>
-
-
-
 
 <template>
   <div class="advanced-search-container">
@@ -145,13 +198,12 @@ export default {
         <div class="search-fields">
           <div class="search-field">
             <label for="searchLocation">In quale città?</label>
-            <!-- <SearchComponent @search="updateFilters" /> -->
             <div class="input-wrapper">
               <input
                 type="text"
                 v-model="searchLocation"
                 placeholder="Inserisci una località"
-                @input="debounceSearchLocation"
+                @input="handleInput"
                 @focus="showSuggestions = true"
                 id="searchLocation"
               />
@@ -161,14 +213,15 @@ export default {
             <ul v-if="showSuggestions && suggestions.length" class="suggestions-list">
               <li
                 v-for="suggestion in suggestions"
-                :key="suggestion"
+                :key="suggestion.address"
                 @click="selectSuggestion(suggestion)"
               >
-                {{ suggestion }}
+                {{ suggestion.address }}
               </li>
             </ul>
           </div>
 
+          <!-- Altri campi di ricerca (stanze, letti, distanza) -->
           <div class="search-field">
             <label for="rooms">Quante stanze?</label>
             <div class="input-wrapper">
@@ -177,8 +230,8 @@ export default {
                 v-model.number="rooms"
                 name="rooms"
                 id="rooms"
-                @input="debounceSearchLocation"
-                min="0"
+                @input="debounceFilter"
+                min="1"
               />
               <i class="fas fa-door-open"></i>
             </div>
@@ -192,8 +245,8 @@ export default {
                 v-model.number="beds"
                 name="beds"
                 id="beds"
-                @input="debounceSearchLocation"
-                min="0"
+                @input="debounceFilter"
+                min="1"
               />
               <i class="fas fa-bed"></i>
             </div>
@@ -206,16 +259,16 @@ export default {
                 type="number"
                 v-model.number="searchRadius"
                 placeholder="Raggio in km"
-                @input="debounceSearchLocation"
+                @input="debounceFilter"
                 id="km"
-                min="0"
+                min="1"
               />
               <i class="fas fa-location-arrow"></i>
             </div>
           </div>
         </div>
 
-        <!-- Servizi extra come pulsanti -->
+        <!-- Servizi extra -->
         <div class="extra-services">
           <label>Che servizi cerchi?</label>
           <div class="services-list">
@@ -228,18 +281,10 @@ export default {
                 type="checkbox"
                 :value="extra_service.id"
                 v-model="selectedExtraServices"
-                @change="debounceSearchLocation"
+                @change="debounceFilter"
                 :id="'service-' + extra_service.id"
               />
               <label :for="'service-' + extra_service.id" class="service-label">
-                <i :class="extra_service.icon"></i>
-                <!-- 
-                per l'inserimento delle icone dovrei rimuoere questo tag sopra <i> con questo
-                <img :src="getServiceIcon(extra_service.name)" alt="" class="service-icon" />
-                per prendere le icone... dato che su script ho aggiunto il metodo per prendere le
-                icone e associarle ad ogni servizio. quindi l'unico problema che posso pensare
-                e che i nomi non corrispondono del DB, questa cosa è da verificare
-                -->
                 {{ extra_service.name }}
               </label>
             </div>
@@ -257,11 +302,14 @@ export default {
       <!-- Lista degli appartamenti a destra -->
       <div class="apartments-grid">
     <div
-      v-for="(apartment, index) in apartments"
+      v-for="(apartment, index) in filteredApartments"
       :key="apartment.id"
       class="apartment-card"
-      :style="{ animationDelay: (index * 0.1) + 's' }"
-    >
+      :style="{ 
+      animationDelay: (index * 0.1) + 's', 
+      maxHeight: '500px' , maxWidth: '500px'
+    }"
+  >
       <div class="card-image">
         <img :src="getFullImageUrl(apartment.images)" alt="Immagine Appartamento" />
         <span v-if="apartment.sponsors && apartment.sponsors.length > 0" class="sponsored-label">
@@ -271,9 +319,7 @@ export default {
       <div class="card-content">
         <h3 class="card-title">{{ apartment.title }}</h3>
 
-        <p v-if="apartment.sponsors && apartment.sponsors.length > 0" class="text-warning">
-          SPONSORIZZATO
-        </p>
+       
         <p class="address"><i class="fas fa-map-marker-alt icon"></i> {{ apartment.address }}</p>
         <div class="details">
           <p><i class="fas fa-door-open icon"></i> Stanze: {{ apartment.rooms_num }}</p>
@@ -301,6 +347,9 @@ export default {
     </div>
   </div>
 </template>
+
+
+
 
 <style scoped>
 

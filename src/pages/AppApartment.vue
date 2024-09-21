@@ -99,7 +99,7 @@
             <div v-if="apartment && !loading && !error" class="content-container">
                 <!-- Informazioni sull'Appartamento -->
                 <div class="info-container">
-                    <h2>Dettagli dell'Appartamento</h2>
+                    <h2 class="text-center">Dettagli dell'Appartamento</h2>
                     <div class="details-grid">
                         <div class="detail-item">
                             <i class="fas fa-door-open"></i>
@@ -118,32 +118,14 @@
                             <span>{{ apartment.sq_mt }} m²</span>
                         </div>
 
-                       
+                        <button class="btn-messaggio"><router-link style="text-decoration: none; color: whitesmoke;  font-weight: bold ;" :to="{ name: 'formInfo', params: { id: id } }" class="info-button">Contatta il proprietario</router-link></button>
                     </div>
 
-                    <button class="btn-primary info "><router-link :to="{ name: 'formInfo', params: { id: id } }" class="info-button">Contatta il proprietario</router-link></button>
+                    
                 </div>
 
                 <!-- Mockup Carosello Immagini -->
-                <div class="carousel-container">
-                    <h2>Galleria Immagini</h2>
-                    <div class="carousel">
-                        <img :src="`http://localhost:8000/storage/${apartment.images}`" alt="Immagine principale" class="carousel-image">
-                        <div class="carousel-controls">
-                            <button class="carousel-button" disabled>&lt;</button>
-                            <button class="carousel-button" disabled>&gt;</button>
-                        </div>
-                        <div class="carousel-indicator">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <p class="carousel-note">Carosello mockup: funzionalità non implementata.</p>
-
-                    <!-- TASTO PER LE INFO PROVISSORIO -->
-                    
-                </div>
+                
             </div>
         </section>
     </div>
@@ -240,21 +222,25 @@
 }
 
 .content-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
+    display: flex;
+    /* grid-template-columns: 1fr 1fr; */
+    /* gap: 40px; */
     max-width: 1200px;
     margin: 0 auto;
+    justify-content: center;
+    padding: 2rem;
 }
 
 /* Informazioni sull'Appartamento */
 .info-container,
 .carousel-container {
+    width: 60rem;
     background-color: #ffffff;
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+
 }
 
 .info-container:hover,
@@ -268,14 +254,14 @@
     margin-bottom: 20px;
     color: var(--midnight-blue);
     border-bottom: 2px solid var(--light-pink);
-    display: inline-block;
+    /* display: inline-block; */
     padding-bottom: 5px;
 }
 
 .details-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 20px;
+    gap: 50px;
 }
 
 .detail-item {
@@ -366,6 +352,17 @@
     font-size: 0.9rem;
     color: var(--midnight-blue);
     text-align: center;
+}
+
+/* Bottone per contattare il proprietario */
+.btn-messaggio {
+    background-color: #a34a62;
+    color: var(--light-text);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 /* Responsiveness */

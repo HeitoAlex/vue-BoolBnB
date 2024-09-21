@@ -228,6 +228,7 @@
     max-width: 1200px;
     margin: 0 auto;
     justify-content: center;
+    padding: 2rem;
 }
 
 /* Informazioni sull'Appartamento */

@@ -5,7 +5,8 @@ export default {
             name: '',
             email: '',
             message: '',
-            apartment_id: null // Aggiungi l'ID dell'appartamento
+            apartment_id: null, // Aggiungi l'ID dell'appartamento
+            showModal: false, // Variabile per gestire la visibilità della modale
         };
     },
     mounted() {
@@ -36,7 +37,12 @@ export default {
                 console.log('Risposta dal backend:', responseText); // Log della risposta
 
                 if (response.ok) {
-                    alert('Messaggio inviato con successo!');
+                    this.showModal = true; // Mostra la modale
+
+                    // Reindirizza alla home dopo 3 secondi
+                    setTimeout(() => {
+                        this.$router.push('/');
+                    }, 3000);
                 } else {
                     alert('Errore durante l\'invio del messaggio.');
                 }
@@ -44,9 +50,13 @@ export default {
                 console.error('Errore di connessione:', error);
                 alert('Errore di connessione.');
             }
+        },
+        closeModal() {
+            this.showModal = false; // Chiude la modale
         }
     }
-}
+};
+
 </script>
 
 <template>
@@ -61,17 +71,68 @@ export default {
         </div>
         <div class="mb-3">
             <label for="info" class="form-label">Richiesta informazioni</label>
-            <textarea v-model="message" class="form-control" id="exampleFormControlTextarea1" rows="10"
+            <textarea v-model="message" class="form-control" id="exampleFormControlTextarea1" rows="5"
                 placeholder="Inserire qui la richiesta di informazioni per il proprietario"></textarea>
         </div>
-        <button @click="sendMessage" class="btn btn-primary">Invia</button>
+        <!-- Pulsante centrato -->
+        <div class="d-flex justify-content-center">
+            <button @click="sendMessage" class="btn btn-primary btn-lg">Invia</button>
+        </div>
+
+        <!-- Modale di conferma invio messaggio -->
+        <div v-if="showModal" class="modal fade show" style="display: block;">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Messaggio Inviato</h5>
+                        <button type="button" class="btn-close" @click="closeModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Il tuo messaggio è stato inviato con successo! Verrai reindirizzato alla homepage.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="closeModal" class="btn btn-secondary">Chiudi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
+
+
 
 <style scoped>
 .form-container {
     max-width: 1000px;
     margin: auto;
     margin-top: 7em;
+    padding: 2rem;
+    padding-bottom: 15rem;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
 }
 </style>

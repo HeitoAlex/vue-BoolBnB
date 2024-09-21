@@ -124,46 +124,47 @@ export default {
     </ul>
 
     <!-- Lista degli appartamenti filtrati -->
-    <transition-group name="fade" tag="div" class="apartments-grid">
-      <div
-        class="apartment-card"
-        v-for="(apartment, index) in apartments"
-        :key="apartment.id"
-        :style="{ animationDelay: (index * 0.1) + 's' }"
-      >
-        <div class="card-image">
-          <img :src="getFullImageUrl(apartment.images)" alt="Apartment image">
-          <span v-if="apartment.sponsors && apartment.sponsors.length > 0" class="sponsored-label">
-            <i class="fas fa-star"></i> SPONSORED
-          </span>
-        </div>
-        <div class="card-body">
-          <h5 class="card-title">{{ apartment.title }}</h5>
-          <p class="card-text">
-            <i class="fas fa-map-marker-alt"></i> {{ apartment.address }}
-          </p>
-          <p class="card-text">
-            <i class="fas fa-door-open"></i> Stanze: {{ apartment.rooms_num }}
-          </p>
-          <p class="card-text">
-            <i class="fas fa-bed"></i> Letti: {{ apartment.beds_num }}
-          </p>
-          <p class="card-text">
-            <i class="fas fa-bath"></i> Bagni: {{ apartment.bathroom_num }}
-          </p>
-          <p class="card-text">
-            <i class="fas fa-ruler-combined"></i> Superficie: {{ apartment.sq_mt }} mq
-          </p>
-
-          <!-- Pulsante per leggere di più -->
-          <router-link 
-            :to="{ name: 'apartment', params: { id: apartment.id } }" 
-            class="btn-primary">
-            Leggi di più <i class="fas fa-arrow-right"></i>
-          </router-link>
-        </div>
+      <!-- Lista degli appartamenti filtrati -->
+  <transition-group name="fade" tag="div" class="apartments-grid">
+    <div
+      class="apartment-card"
+      v-for="(apartment, index) in apartments"
+      :key="apartment.id"
+      :style="{ animationDelay: (index * 0.1) + 's' }"
+    >
+      <div class="card-image">
+        <img :src="getFullImageUrl(apartment.images)" alt="Immagine dell'appartamento">
+        <span v-if="apartment.sponsors && apartment.sponsors.length > 0" class="sponsored-label">
+          <i class="fas fa-star"></i> SPONSORIZZATO
+        </span>
       </div>
-    </transition-group>
+      <div class="card-body">
+        <h5 class="card-title">{{ apartment.title }}</h5>
+        <p class="card-text">
+          <i class="fas fa-map-marker-alt icon"></i> {{ apartment.address }}
+        </p>
+        <p class="card-text">
+          <i class="fas fa-door-open icon"></i> Stanze: {{ apartment.rooms_num }}
+        </p>
+        <p class="card-text">
+          <i class="fas fa-bed icon"></i> Letti: {{ apartment.beds_num }}
+        </p>
+        <p class="card-text">
+          <i class="fas fa-bath icon"></i> Bagni: {{ apartment.bathroom_num }}
+        </p>
+        <p class="card-text">
+          <i class="fas fa-ruler-combined icon"></i> Superficie: {{ apartment.sq_mt }} mq
+        </p>
+
+        <!-- Pulsante per leggere di più -->
+        <router-link 
+          :to="{ name: 'apartment', params: { id: apartment.id } }" 
+          class="btn-primary">
+          Leggi di più <i class="fas fa-arrow-right"></i>
+        </router-link>
+      </div>
+    </div>
+  </transition-group>
   </div>
 </template>
 
@@ -254,29 +255,31 @@ export default {
 /* Grid degli appartamenti */
 .apartments-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
-  margin-top: 30px;
+  padding: 20px;
 }
 
 /* Card degli appartamenti */
 .apartment-card {
   background-color: var(--smoke-gray);
-  border-radius: 8px;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
-  opacity: 0;
-  animation: fadeInUp 0.5s ease forwards;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: fadeIn 0.5s ease-in-out forwards;
 }
 
 .apartment-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-10px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
 }
 
 .card-image {
+  position: relative;
   width: 100%;
   height: 200px;
   overflow: hidden;
@@ -286,46 +289,92 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.5s;
 }
 
 .apartment-card:hover .card-image img {
   transform: scale(1.1);
 }
 
+
+.sponsored-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: var(--dark-pink);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.9em;
+  display: flex;
+  align-items: center;
+  animation: slideIn 0.5s ease forwards;
+}
+
+
+.sponsored-label i {
+  margin-right: 5px;
+  color: gold;
+}
+
 .card-body {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .card-title {
+  font-size: 1.5em;
+  padding-left: 1rem;
   color: var(--midnight-blue);
   margin-bottom: 10px;
 }
 
 .card-text {
   color: var(--text-gray);
-  margin-bottom: 5px;
+  margin: 5px 0;
+  padding-left: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+
+.card-text .icon {
+  color: var(--dark-pink);
+  margin-right: 10px;
+  transition: color 0.3s;
+}
+
+.card-text .icon:hover {
+  color: var(--midnight-blue);
 }
 
 .btn-primary {
-  display: block;
-  text-align: center;
-  margin-top: 15px;
-  padding: 10px;
-  background-color: var(--light-pink);
+  margin-top: auto;
+  background-color: var(--dark-midnight-blue);
+  color: white;
+  padding: 10px 15px;
   border: none;
-  color: var(--midnight-blue);
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  border-radius: 5px;
+  text-align: center;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
 }
 
 .btn-primary:hover {
-  background-color: var(--dark-pink);
+  background-color: var(--midnight-blue);
+}
+
+.btn-primary i {
+  margin-left: 5px;
 }
 
 /* Animazioni */
-@keyframes fadeInUp {
+@keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -333,6 +382,17 @@ export default {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 </style>

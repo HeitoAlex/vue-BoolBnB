@@ -291,50 +291,59 @@ export default {
           </div>
         </div>
 
+
+        <!-- <div class="test-icon">
+          <i class="fas fa-check"></i> Icon Test
+        </div> -->
+
+        <button class="search-button" @click="getApartments">Cerca</button>
       </div>
 
       <!-- Lista degli appartamenti a destra -->
       <div class="apartments-grid">
-        <div
-          v-for="(apartment, index) in filteredApartments"
-          :key="apartment.id"
-          class="apartment-card"
-          :style="{ animationDelay: (index * 0.1) + 's' }"
-        >
-          <div class="card-image">
-            <img :src="getFullImageUrl(apartment.images)" alt="Immagine Appartamento" />
-          </div>
-          <div class="card-content">
-            <h3>{{ apartment.title }}</h3>
-
-            <p v-if="apartment.sponsors && apartment.sponsors.length > 0" class="text-warning">
-              SPONSORED
-            </p>
-            <p class="address"><i class="fas fa-map-marker-alt"></i> {{ apartment.address }}</p>
-            <div class="details">
-              <p><i class="fas fa-door-open"></i> Stanze: {{ apartment.rooms_num }}</p>
-              <p><i class="fas fa-bed"></i> Letti: {{ apartment.beds_num }}</p>
-              <p><i class="fas fa-bath"></i> Bagni: {{ apartment.bathroom_num }}</p>
-            </div>
-
-            <!-- Servizi extra dell'appartamento -->
-            <div class="extra-services-list">
-              <p>Servizi Extra:</p>
-              <ul>
-                <li v-for="(service, index) in apartment.extra_services" :key="service.id">
-                  {{ service.name }}
-                </li>
-              </ul>
-            </div>
-
-            <router-link 
-            :to="{ name: 'apartment', params: { id: apartment.id } }" 
-            class="btn-primary">
-            Leggi di più
-            </router-link>
-          </div>
-        </div>
+    <div
+      v-for="(apartment, index) in filteredApartments"
+      :key="apartment.id"
+      class="apartment-card"
+      :style="{ 
+      animationDelay: (index * 0.1) + 's', 
+      maxHeight: '500px' , maxWidth: '500px'
+    }"
+  >
+      <div class="card-image">
+        <img :src="getFullImageUrl(apartment.images)" alt="Immagine Appartamento" />
+        <span v-if="apartment.sponsors && apartment.sponsors.length > 0" class="sponsored-label">
+          <i class="fas fa-star"></i> SPONSORIZZATO
+        </span>
       </div>
+      <div class="card-content">
+        <h3 class="card-title">{{ apartment.title }}</h3>
+
+       
+        <p class="address"><i class="fas fa-map-marker-alt icon"></i> {{ apartment.address }}</p>
+        <div class="details">
+          <p><i class="fas fa-door-open icon"></i> Stanze: {{ apartment.rooms_num }}</p>
+          <p><i class="fas fa-bed icon"></i> Letti: {{ apartment.beds_num }}</p>
+          <p><i class="fas fa-bath icon"></i> Bagni: {{ apartment.bathroom_num }}</p>
+        </div>
+        <!-- Servizi extra dell'appartamento -->
+        <div class="extra-services-list">
+          <p>Servizi Extra:</p>
+          <ul>
+            <li v-for="(service, index) in apartment.extra_services" :key="service.id">
+              <i :class="service.icon"></i> {{ service.name }}
+            </li>
+          </ul>
+        </div>
+
+        <router-link 
+          :to="{ name: 'apartment', params: { id: apartment.id } }" 
+          class="btn-primary">
+          Leggi di più <i class="fas fa-arrow-right"></i>
+        </router-link>
+      </div>
+    </div>
+  </div>
     </div>
   </div>
 </template>
@@ -343,6 +352,11 @@ export default {
 
 
 <style scoped>
+
+/* CDN */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
+
 /* Variabili di colore */
 :root {
   --light-pink: #f5c1d1;
@@ -371,6 +385,39 @@ export default {
   display: flex;
   gap: 20px;
   animation: fadeIn 1s ease forwards;
+}
+
+.icon {
+  color: var(--dark-pink);
+  margin-right: 10px;
+  transition: color 0.3s;
+}
+
+.details {
+  margin: 10px 0;
+}
+
+.extra-services-list {
+  margin: 10px 0;
+}
+
+
+.extra-services-list p {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.extra-services-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+
+.extra-services-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
 }
 
 /* Barra di ricerca a sinistra */
@@ -490,6 +537,26 @@ export default {
   color: #fff;
 }
 
+.sponsored-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: var(--dark-pink);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.9em;
+  display: flex;
+  align-items: center;
+  animation: slideIn 0.5s ease forwards;
+}
+
+
+.sponsored-label i {
+  margin-right: 5px;
+  color: gold;
+}
+
 /* Pulsante di ricerca */
 .search-button {
   display: block;
@@ -546,29 +613,43 @@ export default {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 25px;
   animation: fadeInRight 1s ease forwards;
-}
+}  /* Questa è da cambiare */
 
 /* Card degli appartamenti */
 .apartment-card {
-  background-color: #fff;
-  border-radius: 10px;
+  background-color: var(--smoke-gray);
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  opacity: 0;
-  animation: fadeInUp 0.5s ease forwards;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: fadeIn 0.5s ease-in-out forwards;
+  height: 100%; /* Assicura che tutte le card abbiano la stessa altezza */
 }
 
 .apartment-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  transform: translateY(-10px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-image {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
 }
 
 .card-image img {
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.5s;
+}
+
+.apartment-card:hover .card-image img {
+  transform: scale(1.1);
 }
 
 .apartment-card:hover .card-image img {
@@ -576,7 +657,20 @@ export default {
 }
 
 .card-content {
-  padding: 20px;
+  margin: .2rem;
+  padding: .4rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; 
+  /* per far stare il tasto in basso */
+}
+
+.card-text,
+.address {
+  color: var(--text-gray);
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
 }
 
 .card-content h3 {
@@ -642,9 +736,11 @@ export default {
 @keyframes fadeIn {
   from {
     opacity: 0;
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 

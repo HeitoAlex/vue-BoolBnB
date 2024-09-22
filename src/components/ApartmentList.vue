@@ -180,11 +180,11 @@ export default {
 }
 
 .container {
-  padding: 20px;
+  padding: 1rem;
 }
 
 /* Barra di ricerca */
-.search-bar {
+/* .search-bar {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -224,7 +224,7 @@ export default {
 
 .search-button:hover {
   background-color: var(--dark-midnight-blue);
-}
+} */
 
 /* Lista dei suggerimenti */
 .suggestions-list {
@@ -243,7 +243,7 @@ export default {
 }
 
 .suggestions-list li {
-  padding: 10px;
+  padding: .2rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -256,8 +256,8 @@ export default {
 .apartments-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  gap: 2rem;
+  padding: .8rem;
 }
 
 /* Card degli appartamenti */
@@ -314,7 +314,7 @@ export default {
 
 .sponsored-label i {
   margin-right: 5px;
-  color: gold;
+  color: #FFD700;
 }
 
 .card-body {

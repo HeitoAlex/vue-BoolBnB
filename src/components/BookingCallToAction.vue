@@ -5,7 +5,7 @@
         <p class="cta-description">
           Scopri una vasta selezione di appartamenti perfetti per le tue esigenze. Prenota ora e assicurati la migliore offerta!
         </p>
-        <a href="/AdvancedSearch" class="search-button">Cerca</a>
+        <a href="/AdvancedSearch" class="search-button">Cerca un Appartamento</a>
       </div>
     </div>
   </template>

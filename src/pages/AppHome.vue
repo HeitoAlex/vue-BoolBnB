@@ -28,10 +28,19 @@
 <template>
     <Jumbo /> 
     <BookingCallToAction /> <!-- Div che porta alla pagina di ricerca -> AdvancedSearch.vue -->
-    <ApartmentList :filters="filters" /> 
+    <ApartmentList :filters="filters" />
+    
+    
 </template>
 
 <style scoped>
 
+.container{
+    margin-left: 1rem;
+    padding-left: 1rem;
+    margin-bottom: 3rem;
+
+    max-width: 99%;
+}
 
 </style>

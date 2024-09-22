@@ -5,7 +5,7 @@
         </video>
         <div class="overlay"></div>
         <div class="content">
-            <h1>BoolBnB</h1>
+            <h1>B <img src="../assets/img/Small_Logo.png" style="height: 3.4rem; margin-top: 2.2rem; padding: 0;" alt=""> <h1>olBnB</h1></h1>
             <button class="scroll-button" @click="scrollDown">Prenota Ora</button> <!-- Pulsante -->
         </div>
     </div>
@@ -68,6 +68,7 @@ export default {
   font-weight: 600;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
   margin-bottom: 1rem;
+  display: flex;
 }
 
 .content h1:hover {
